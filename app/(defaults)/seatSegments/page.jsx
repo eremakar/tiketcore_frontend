@@ -25,6 +25,7 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
     const [editShow, setEditShow] = useState(false);
     const [detailsShow, setDetailsShow] = useState(false);
     const [data, setData] = useState([]);
+    const [segmentPairs, setSegmentPairs] = useState([]);
 
     const [row, setRow] = useState(null);
     const resourceActionPostfix = "сегмент по месту (от-до)";
@@ -95,6 +96,62 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
 
         return sortedGroups;
     };
+
+    // Обертка onMap: строим группы и сразу формируем пары по первому элементу groups
+    const mapAndBuildPairs = (segments) => {
+        const grouped = groupSegments(segments);
+        if (!grouped || grouped.length === 0) {
+            setSegmentPairs([]);
+            return grouped;
+        }
+
+        const firstGroup = grouped[0];
+        const firstSegments = firstGroup?.segments || [];
+        const seen = new Set();
+        const pairs = [];
+
+        firstSegments.forEach((segment) => {
+            const fromId = segment?.from?.id || segment?.fromId;
+            const toId = segment?.to?.id || segment?.toId;
+            if (!fromId || !toId) return;
+            const key = `${fromId}_${toId}`;
+            if (seen.has(key)) return;
+            seen.add(key);
+
+            const fromName = segment?.from?.station?.name || segment?.from?.name || 'От';
+            const toName = segment?.to?.station?.name || segment?.to?.name || 'До';
+            pairs.push({ key, fromId, toId, title: `${fromName} → ${toName}` });
+        });
+
+        setSegmentPairs(pairs);
+        return grouped;
+    };
+
+    const renderPairCell = (row, pair) => {
+        const segments = row?.segments || [];
+        const seg = segments.find(s => {
+            const fromId = s?.from?.id || s?.fromId;
+            const toId = s?.to?.id || s?.toId;
+            return fromId === pair.fromId && toId === pair.toId;
+        });
+
+        if (!seg) {
+            return <span className="text-gray-300">—</span>;
+        }
+
+        const hasReservation = seg.seatReservation?.id || seg.seatReservation;
+        const bgColor = hasReservation ? 'bg-orange-100 border-orange-300' : 'bg-blue-100 border-blue-300';
+        const title = `${seg.from?.station?.name || seg.from?.name || 'От'} → ${seg.to?.station?.name || seg.to?.name || 'До'}\nЦена: ${seg.price || 0} ₽\nБилет: ${seg.ticket?.name || seg.ticket?.id || '-'}\nРезерв: ${seg.seatReservation?.name || seg.seatReservation?.id || '-'}`;
+
+        return (
+            <div
+                className={`px-2 py-1 ${bgColor} border rounded text-xs font-medium text-center`}
+                title={title}
+            >
+                {seg.price ?? ''}
+            </div>
+        );
+    };
     return (
         <>
             <ResourceTable
@@ -104,20 +161,33 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
                 setQuery={setQuery}
                 data={data}
                 setData={setData}
-                onMap={groupSegments}
+                onMap={mapAndBuildPairs}
                 filterMode={hideFilters ? "none" : "default"}
                 sortMode={hideFilters ? "none" : "default"}
                 hideDelete={true}
                 fullHeight={fullHeight}
-                columns={[
-                    { key: 'id', title: 'Ид', isSortable: true },
-                    ...(isWagonFiltered ? [] : [
-                        { key: 'trainSchedule', title: 'Расписание', isSortable: true, render: (value) => value?.name },
-                        { key: 'train', title: 'Поезд', isSortable: true, render: (value) => value?.name },
-                        { key: 'wagon', title: 'Вагон', isSortable: true, render: (value) => value?.number }
-                    ]),
-                    { key: 'seat', title: 'Место', isSortable: true, render: (value) => value?.number },
-                    {
+                columns={(() => {
+                    const base = [
+                        { key: 'id', title: 'Ид', isSortable: true },
+                        ...(isWagonFiltered ? [] : [
+                            { key: 'trainSchedule', title: 'Расписание', isSortable: true, render: (value) => value?.name },
+                            { key: 'train', title: 'Поезд', isSortable: true, render: (value) => value?.name },
+                            { key: 'wagon', title: 'Вагон', isSortable: true, render: (value) => value?.number }
+                        ]),
+                        { key: 'seat', title: 'Место', isSortable: true, render: (value) => value?.number },
+                    ];
+
+                    if (segmentPairs.length > 0) {
+                        const dyn = segmentPairs.map(pair => ({
+                            key: `seg_${pair.key}`,
+                            title: pair.title,
+                            isSortable: false,
+                            render: (value, row) => renderPairCell(row, pair)
+                        }));
+                        return [...base, ...dyn];
+                    }
+
+                    return [...base, {
                         key: 'segments',
                         title: 'Сегменты',
                         isSortable: false,
@@ -147,8 +217,8 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
                                 </div>
                             );
                         }
-                    },
-                ]}
+                    }];
+                })()}
                 filters={[
                     {
                         title: 'Ид',
