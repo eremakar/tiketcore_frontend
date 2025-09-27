@@ -39,7 +39,7 @@ export default function TrainWagons({ defaultQuery = null, fullHeight = false, o
     const seatSegmentsQuery = useMemo(() => {
         if (!currentExpandedWagonId) return null;
         return {
-            paging: { skip: 0, take: 50 },
+            paging: { skip: 0, take: 5000 },
             filter: {
                 wagonId: {
                     operand1: currentExpandedWagonId,

@@ -145,11 +145,120 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
 
         return (
             <div
-                className={`px-2 py-1 ${bgColor} border rounded text-xs font-medium text-center`}
+                className={`${bgColor} border rounded text-xs font-medium text-center min-w-0 flex-shrink-0`}
                 title={title}
             >
                 {seg.price ?? ''}
             </div>
+        );
+    };
+
+    // Функция для группировки сегментов по брони и создания объединенных ячеек
+    const groupSegmentsByReservation = (segments) => {
+        if (!segments || segments.length === 0) return [];
+        
+        const groups = {};
+        segments.forEach(segment => {
+            const reservationId = segment.seatReservation?.id || segment.seatReservation || 'no-reservation';
+            if (!groups[reservationId]) {
+                groups[reservationId] = {
+                    reservationId,
+                    segments: [],
+                    totalPrice: 0
+                };
+            }
+            groups[reservationId].segments.push(segment);
+            groups[reservationId].totalPrice += segment.price || 0;
+        });
+
+        return Object.values(groups);
+    };
+
+    // Кастомный рендер строки с объединенными ячейками
+    const renderRowWithMergedCells = (row, columns) => {
+        const segments = row?.segments || [];
+        const reservationGroups = groupSegmentsByReservation(segments);
+        
+        return (
+            <tr key={row.key}>
+                {columns.map((column, columnIndex) => {
+                    if (column.key.startsWith('seg_')) {
+                        // Для сегментных колонок
+                        const pairKey = column.key.replace('seg_', '');
+                        const pair = segmentPairs.find(p => p.key === pairKey);
+                        
+                        if (!pair) {
+                            return <td key={columnIndex} style={{ padding: '2px' }}>—</td>;
+                        }
+
+                        const seg = segments.find(s => {
+                            const fromId = s?.from?.id || s?.fromId;
+                            const toId = s?.to?.id || s?.toId;
+                            return fromId === pair.fromId && toId === pair.toId;
+                        });
+
+                        if (!seg) {
+                            return <td key={columnIndex} style={{ padding: '2px' }}>—</td>;
+                        }
+
+                        const reservationId = seg.seatReservation?.id || seg.seatReservation || 'no-reservation';
+                        const group = reservationGroups.find(g => g.reservationId === reservationId);
+                        
+                        // Если есть бронь и группа содержит больше одного сегмента
+                        if (group && group.segments.length > 1 && reservationId !== 'no-reservation') {
+                            // Находим индекс первого сегмента этой группы в списке пар
+                            const firstSegmentInGroup = group.segments[0];
+                            const firstPairIndex = segmentPairs.findIndex(p => {
+                                const fromId = firstSegmentInGroup?.from?.id || firstSegmentInGroup?.fromId;
+                                const toId = firstSegmentInGroup?.to?.id || firstSegmentInGroup?.toId;
+                                return p.fromId === fromId && p.toId === toId;
+                            });
+                            
+                            const currentPairIndex = segmentPairs.findIndex(p => p.key === pairKey);
+                            
+                            // Если это не первый сегмент в группе, скрываем ячейку
+                            if (currentPairIndex !== firstPairIndex) {
+                                return null;
+                            }
+                            
+                            // Рендерим объединенную ячейку
+                            const hasReservation = seg.seatReservation?.id || seg.seatReservation;
+                            const bgColor = hasReservation ? 'bg-orange-100 border-orange-300' : 'bg-blue-100 border-blue-300';
+                            const title = `Объединенная бронь\nКоличество сегментов: ${group.segments.length}\nОбщая цена: ${group.totalPrice} ₽`;
+                            
+                            return (
+                                <td 
+                                    key={columnIndex} 
+                                    colSpan={group.segments.length} 
+                                    style={{ padding: '2px' }}
+                                >
+                                    <div
+                                        className={`${bgColor} border rounded text-xs font-medium text-center min-w-0 flex-shrink-0`}
+                                        title={title}
+                                    >
+                                        {group.totalPrice} ({group.segments.length})
+                                    </div>
+                                </td>
+                            );
+                        } else {
+                            // Обычная ячейка
+                            return (
+                                <td key={columnIndex} style={{ padding: '2px' }}>
+                                    {renderPairCell(row, pair)}
+                                </td>
+                            );
+                        }
+                    } else {
+                        // Для обычных колонок
+                        const value = row[column.key];
+                        return (
+                            <td key={columnIndex} style={{ padding: '2px' }}>
+                                {column.render ? column.render(value, row) : value}
+                            </td>
+                        );
+                    }
+                })}
+            </tr>
         );
     };
     return (
@@ -166,6 +275,9 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
                 sortMode={hideFilters ? "none" : "default"}
                 hideDelete={true}
                 fullHeight={fullHeight}
+                renderRows={(columns, renderCell, data, page, renderActions) => 
+                    page.map((row, rowIndex) => renderRowWithMergedCells(row, columns))
+                }
                 columns={(() => {
                     const base = [
                         { key: 'id', title: 'Ид', isSortable: true },
@@ -182,6 +294,14 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
                             key: `seg_${pair.key}`,
                             title: pair.title,
                             isSortable: false,
+                            style: { padding: '2px' },
+                            renderHead: () => (
+                                <div className="text-center leading-tight">
+                                    {pair.title.split(' → ').map((part, index) => (
+                                        <div key={index} className="text-xs">{part}</div>
+                                    ))}
+                                </div>
+                            ),
                             render: (value, row) => renderPairCell(row, pair)
                         }));
                         return [...base, ...dyn];
@@ -191,6 +311,7 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
                         key: 'segments',
                         title: 'Сегменты',
                         isSortable: false,
+                        style: { padding: '2px' },
                         render: (value, row) => {
                             const segments = row.segments || [];
 
@@ -207,7 +328,7 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
                                         return (
                                             <div
                                                 key={segment.id || index}
-                                                className={`px-2 py-1 ${bgColor} border rounded text-xs font-medium`}
+                                                className={`${bgColor} border rounded text-xs font-medium min-w-0 flex-shrink-0`}
                                                 title={`${segment.from?.station?.name || segment.from?.name || 'От'} → ${segment.to?.station?.name || segment.to?.name || 'До'}\nЦена: ${segment.price || 0} ₽\nБилет: ${segment.ticket?.name || segment.ticket?.id || '-'}\nРезерв: ${segment.seatReservation?.name || segment.seatReservation?.id || '-'}`}
                                             >
                                                 {(segment.from?.station?.name || segment.from?.name || 'От').substring(0, 3)} → {(segment.to?.station?.name || segment.to?.name || 'До').substring(0, 3)}
