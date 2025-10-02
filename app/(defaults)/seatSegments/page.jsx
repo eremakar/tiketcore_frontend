@@ -140,7 +140,14 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
         }
 
         const hasReservation = seg.seatReservation?.id || seg.seatReservation;
-        const bgColor = hasReservation ? 'bg-orange-100 border-orange-300' : 'bg-blue-100 border-blue-300';
+        const hasTicket = seg.ticket?.id || seg.ticket;
+        
+        let bgColor = 'bg-blue-100 border-blue-300'; // по умолчанию синий (свободно)
+        if (hasReservation) {
+            bgColor = 'bg-orange-100 border-orange-300'; // оранжевый для брони
+        } else if (hasTicket) {
+            bgColor = 'bg-green-100 border-green-300'; // зеленый для билета
+        }
         const title = `${seg.from?.station?.name || seg.from?.name || 'От'} → ${seg.to?.station?.name || seg.to?.name || 'До'}\nЦена: ${seg.price || 0} ₽\nБилет: ${seg.ticket?.name || seg.ticket?.id || '-'}\nРезерв: ${seg.seatReservation?.name || seg.seatReservation?.id || '-'}`;
 
         return (
@@ -174,10 +181,32 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
         return Object.values(groups);
     };
 
+    // Функция для группировки сегментов по билетам и создания объединенных ячеек
+    const groupSegmentsByTicket = (segments) => {
+        if (!segments || segments.length === 0) return [];
+        
+        const groups = {};
+        segments.forEach(segment => {
+            const ticketId = segment.ticket?.id || segment.ticket || 'no-ticket';
+            if (!groups[ticketId]) {
+                groups[ticketId] = {
+                    ticketId,
+                    segments: [],
+                    totalPrice: 0
+                };
+            }
+            groups[ticketId].segments.push(segment);
+            groups[ticketId].totalPrice += segment.price || 0;
+        });
+
+        return Object.values(groups);
+    };
+
     // Кастомный рендер строки с объединенными ячейками
     const renderRowWithMergedCells = (row, columns) => {
         const segments = row?.segments || [];
         const reservationGroups = groupSegmentsByReservation(segments);
+        const ticketGroups = groupSegmentsByTicket(segments);
         
         return (
             <tr key={row.key}>
@@ -202,12 +231,20 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
                         }
 
                         const reservationId = seg.seatReservation?.id || seg.seatReservation || 'no-reservation';
-                        const group = reservationGroups.find(g => g.reservationId === reservationId);
+                        const ticketId = seg.ticket?.id || seg.ticket || 'no-ticket';
                         
-                        // Если есть бронь и группа содержит больше одного сегмента
-                        if (group && group.segments.length > 1 && reservationId !== 'no-reservation') {
+                        // Проверяем бронь
+                        const reservationGroup = reservationGroups.find(g => g.reservationId === reservationId);
+                        const isReservationMerged = reservationGroup && reservationGroup.segments.length > 1 && reservationId !== 'no-reservation';
+                        
+                        // Проверяем билет
+                        const ticketGroup = ticketGroups.find(g => g.ticketId === ticketId);
+                        const isTicketMerged = ticketGroup && ticketGroup.segments.length > 1 && ticketId !== 'no-ticket';
+                        
+                        // Приоритет: сначала бронь, потом билет
+                        if (isReservationMerged) {
                             // Находим индекс первого сегмента этой группы в списке пар
-                            const firstSegmentInGroup = group.segments[0];
+                            const firstSegmentInGroup = reservationGroup.segments[0];
                             const firstPairIndex = segmentPairs.findIndex(p => {
                                 const fromId = firstSegmentInGroup?.from?.id || firstSegmentInGroup?.fromId;
                                 const toId = firstSegmentInGroup?.to?.id || firstSegmentInGroup?.toId;
@@ -221,22 +258,55 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
                                 return null;
                             }
                             
-                            // Рендерим объединенную ячейку
-                            const hasReservation = seg.seatReservation?.id || seg.seatReservation;
-                            const bgColor = hasReservation ? 'bg-orange-100 border-orange-300' : 'bg-blue-100 border-blue-300';
-                            const title = `Объединенная бронь\nКоличество сегментов: ${group.segments.length}\nОбщая цена: ${group.totalPrice} ₽`;
+                            // Рендерим объединенную ячейку для брони
+                            const bgColor = 'bg-orange-100 border-orange-300';
+                            const title = `Объединенная бронь\nКоличество сегментов: ${reservationGroup.segments.length}\nОбщая цена: ${reservationGroup.totalPrice} ₽`;
                             
                             return (
                                 <td 
                                     key={columnIndex} 
-                                    colSpan={group.segments.length} 
+                                    colSpan={reservationGroup.segments.length} 
                                     style={{ padding: '2px' }}
                                 >
                                     <div
                                         className={`${bgColor} border rounded text-xs font-medium text-center min-w-0 flex-shrink-0`}
                                         title={title}
                                     >
-                                        {group.totalPrice} ({group.segments.length})
+                                        {reservationGroup.totalPrice} ({reservationGroup.segments.length})
+                                    </div>
+                                </td>
+                            );
+                        } else if (isTicketMerged) {
+                            // Находим индекс первого сегмента этой группы в списке пар
+                            const firstSegmentInGroup = ticketGroup.segments[0];
+                            const firstPairIndex = segmentPairs.findIndex(p => {
+                                const fromId = firstSegmentInGroup?.from?.id || firstSegmentInGroup?.fromId;
+                                const toId = firstSegmentInGroup?.to?.id || firstSegmentInGroup?.toId;
+                                return p.fromId === fromId && p.toId === toId;
+                            });
+                            
+                            const currentPairIndex = segmentPairs.findIndex(p => p.key === pairKey);
+                            
+                            // Если это не первый сегмент в группе, скрываем ячейку
+                            if (currentPairIndex !== firstPairIndex) {
+                                return null;
+                            }
+                            
+                            // Рендерим объединенную ячейку для билета
+                            const bgColor = 'bg-green-100 border-green-300';
+                            const title = `Объединенный билет\nКоличество сегментов: ${ticketGroup.segments.length}\nОбщая цена: ${ticketGroup.totalPrice} ₽`;
+                            
+                            return (
+                                <td 
+                                    key={columnIndex} 
+                                    colSpan={ticketGroup.segments.length} 
+                                    style={{ padding: '2px' }}
+                                >
+                                    <div
+                                        className={`${bgColor} border rounded text-xs font-medium text-center min-w-0 flex-shrink-0`}
+                                        title={title}
+                                    >
+                                        {ticketGroup.totalPrice} ({ticketGroup.segments.length})
                                     </div>
                                 </td>
                             );
@@ -323,7 +393,14 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
                                 <div className="flex flex-wrap gap-1 max-w-md">
                                     {segments.map((segment, index) => {
                                         const hasReservation = segment.seatReservation?.id || segment.seatReservation;
-                                        const bgColor = hasReservation ? 'bg-orange-100 border-orange-300' : 'bg-blue-100 border-blue-300';
+                                        const hasTicket = segment.ticket?.id || segment.ticket;
+                                        
+                                        let bgColor = 'bg-blue-100 border-blue-300'; // по умолчанию синий (свободно)
+                                        if (hasReservation) {
+                                            bgColor = 'bg-orange-100 border-orange-300'; // оранжевый для брони
+                                        } else if (hasTicket) {
+                                            bgColor = 'bg-green-100 border-green-300'; // зеленый для билета
+                                        }
 
                                         return (
                                             <div

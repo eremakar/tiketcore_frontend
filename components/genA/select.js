@@ -24,6 +24,14 @@ export const Select2 = ({ options, placeholder, orientation, value, onChange, is
 
     const item = value ? find(value) : (isNullable ? mappedOptions[0] : null);
 
+    const buildMappedObj = (itemValue, itemLabel, itemCode) => {
+        const obj = {};
+        obj[valueMemberName] = itemValue;
+        obj[labelMemberName] = itemLabel;
+        obj[codeMemberName] = itemCode;
+        return obj;
+    };
+
     return <Select
         classNamePrefix="Select-sm"
         placeholder={vertical ? placeholder : ""}
@@ -34,14 +42,18 @@ export const Select2 = ({ options, placeholder, orientation, value, onChange, is
         options={mappedOptions}
         onChange={(e) => {
             const item = e;
-            onChange && onChange(item.value);
+            
+            // Find the original object from options
+            const originalObj = options.find(_ => _[valueMemberName] == item.value);
+            
+            // Create mapped object with standard field names
+            const mappedObj = buildMappedObj(item.value, item.label, item.code);
+            
+            // Call onChange with all three parameters: (newValue, originalObj, mappedObj)
+            onChange && onChange(item.value, originalObj, mappedObj);
 
             if (props.objectMemberName && props.setValue) {
-                const obj = {};
-                obj[valueMemberName] = item.value;
-                obj[labelMemberName] = item.label;
-                obj[codeMemberName] = item.code;
-                props.setValue(props.objectMemberName, obj);
+                props.setValue(props.objectMemberName, mappedObj);
             }
         }}
         {...props}

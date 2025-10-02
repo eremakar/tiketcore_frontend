@@ -10,6 +10,7 @@ export const viewTypeIds = {
     lookup: 'lookup',
     int: 'int',
     bigint: 'bigint',
+    float: 'float',
     control: 'control'
 };
 

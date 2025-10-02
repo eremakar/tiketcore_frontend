@@ -148,6 +148,11 @@ const DataCell2 = ({ data, setData,
                         row[column.key] = newValue;
                         onChange(row);
                     }} className="tableRowField" options={column.view?.options} />
+                case viewTypeIds.float:
+                    return <Field type='float' value={value} onChange={(newValue) => {
+                        row[column.key] = newValue;
+                        onChange(row);
+                    }} className="tableRowField" options={{...column.view?.options, decimalPlaces: column.decimalPlaces}} />
                 case viewTypeIds.list:
                     options = column.options;
                     const listOptions = options?.list;

@@ -19,7 +19,7 @@ const HorizontalMenu = () => {
     const router = useRouter();
 
     return <>
-        <ul className="horizontal-menu hidden border-t border-[#ebedf2] bg-white px-6 py-1.5 font-semibold text-black rtl:space-x-reverse dark:border-[#191e3a] dark:bg-black dark:text-white-dark lg:space-x-1.5 xl:space-x-8">
+        <ul className="horizontal-menu hidden border-t border-white/20 bg-gradient-to-r from-blue-500 via-purple-500 to-pink-500 animate-gradient px-6 py-2 font-semibold text-white rtl:space-x-reverse backdrop-blur-sm dark:from-blue-800 dark:via-purple-800 dark:to-pink-800 lg:space-x-1.5 xl:space-x-8">
             <li className="menu nav-item relative">
                 <button type="button" className="nav-link">
                     <div className="flex items-center">
@@ -82,6 +82,9 @@ const HorizontalMenu = () => {
                         <Link href="/tarifications/baseFares">Базовые тарифы</Link>
                     </li>
                     <li>
+                        <Link href="/tarifications/tariffs">Тарифы</Link>
+                    </li>
+                    <li>
                         <Link href="/tarifications/seasons">Сезоны</Link>
                     </li>
                     <li>
@@ -91,10 +94,25 @@ const HorizontalMenu = () => {
                         <Link href="/tarifications/seatTariffs">Тарифы мест</Link>
                     </li>
                     <li>
+                        <Link href="/tarifications/seatTariffItems">Элементы тарифов мест</Link>
+                    </li>
+                    <li>
                         <Link href="/tarifications/trainCategories">Категории поезда</Link>
                     </li>
                     <li>
                         <Link href="/tarifications/wagonClasses">Классы вагона</Link>
+                    </li>
+                    <li>
+                        <Link href="/tarifications/tariffSeatTypeItems">Элементы тарифа типа места</Link>
+                    </li>
+                    <li>
+                        <Link href="/tarifications/tariffTrainCategoryItems">Элементы тарифа категории поезда</Link>
+                    </li>
+                    <li>
+                        <Link href="/tarifications/tariffWagonItems">Элементы тарифа вагона</Link>
+                    </li>
+                    <li>
+                        <Link href="/tarifications/tariffWagonTypeItems">Элементы тарифа типа вагона</Link>
                     </li>
                 </ul>
             </li>

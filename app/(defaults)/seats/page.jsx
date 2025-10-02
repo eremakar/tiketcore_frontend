@@ -1,13 +1,16 @@
 ﻿'use client';
 
 import ResourceTable from "@/components/genA/resourceTable";
+import ResourceTable2 from "@/components/genA/v2/resourceTable";
 import useResource from "@/hooks/useResource";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import TrainWagonLookup from "@/app/(defaults)/trainWagons/lookup";
 import SeatTypeLookup from "@/app/(defaults)/seatTypes/lookup";
+import { viewTypeIds } from "@/components/genA/v2/viewTypeIds";
+import { dataTableEventTypeIds } from "@/components/genA/v2/dataTableEventTypeIds";
 
-export default function Seats() {
-    const [query, setQuery] = useState({
+export default function Seats({ defaultQuery = null, fullHeight = false, hideFilters = false, ...props }) {
+    const [query, setQuery] = useState(defaultQuery || {
         paging: { skip: 0, take: 10 },
         filter: {},
         sort: {
@@ -21,32 +24,99 @@ export default function Seats() {
     const [editShow, setEditShow] = useState(false);
     const [detailsShow, setDetailsShow] = useState(false);
 
+    const [data, setData] = useState(null);
     const [row, setRow] = useState(null);
     const resourceActionPostfix = "место в вагоне";
+
+    const resource = useResource('seats');
+    const trainWagonsResource = useResource('trainWagons');
+    const seatTypesResource = useResource('seatTypes');
+    const [seatTypes, setSeatTypes] = useState([]);
 
     const fetch = () => {
         setQuery({...query});
     }
 
-    const resource = useResource('seats');
-    const trainWagonsResource = useResource('trainWagons');
-    const seatTypesResource = useResource('seatTypes');
+    const onMap = (items) => {        
+        if (!items || !Array.isArray(items)) return items;
+        
+        // Sort by number as integer
+        const result = items.sort((a, b) => {
+            const numA = parseInt(a.number) || 0;
+            const numB = parseInt(b.number) || 0;
+            return numA - numB;
+        });
+        return result;
+    }
+
+    // Load seat types for dropdown
+    useEffect(() => {
+        const loadSeatTypes = async () => {
+            try {
+                const seatTypesRes = await seatTypesResource.search({ paging: { skip: 0 } });
+                setSeatTypes(seatTypesRes?.result || []);
+            } catch (e) {
+                console.error(e);
+            }
+        };
+        loadSeatTypes();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    // Update query when defaultQuery changes
+    useEffect(() => {
+        if (defaultQuery) {
+            setQuery(defaultQuery);
+        }
+    }, [defaultQuery]);
+
+    // Check if wagonId is filtered in query
+    const isWagonFiltered = query?.filter?.wagonId || defaultQuery?.filter?.wagonId;
+
     return (
         <>
-            <ResourceTable
-                resource={resource}
+            <ResourceTable2
+                data={data}
+                setData={setData}
+                useResource={() => useResource('seats')}
                 resourceName={resourceActionPostfix}
                 query={query}
                 setQuery={setQuery}
-                filterMode="default"
-                sortMode="default"
-                hideDelete={false}
+                filterMode={hideFilters ? "none" : "default"}
+                sortMode={hideFilters ? "none" : "default"}
+                leftActions={true}
+                enableCellEditOnDoubleClick={false}
+                fullHeight={fullHeight}
+                onMap={onMap}
                 columns={[
-                    { key: 'id', title: 'Ид', isSortable: true },
-                    { key: 'number', title: 'Number', isSortable: true },
-                    { key: 'class', title: 'Class', isSortable: true },
-                    { key: 'wagon', title: 'Wagon', isSortable: true, render: (value) => value?.name },
-                    { key: 'type', title: 'Тип места: верхний/боковой/нижний', isSortable: true, render: (value) => value?.name },
+                    { key: 'id', title: 'Ид', isSortable: true, style: { width: '60px' } },
+                    {
+                        key: 'number',
+                        title: 'Number',
+                        isSortable: true,
+                        editable: true,
+                        type: viewTypeIds.int
+                    },
+                    //{ key: 'class', title: 'Class', isSortable: true },
+                    ...(isWagonFiltered ? [] : [{
+                        key: 'wagon',
+                        title: 'Wagon',
+                        isSortable: true,
+                        render: (value) => value?.name
+                    }]),
+                    {
+                        key: 'type',
+                        title: 'Тип места',
+                        isSortable: true,
+                        editable: true,
+                        type: viewTypeIds.select,
+                        options: {
+                            items: seatTypes,
+                            relationMemberName: 'typeId',
+                            props: { mode: 'portal', labelMemberName: 'name', valueMemberName: 'id' }
+                        },
+                        render: (value) => value?.name || ''
+                    },
                 ]}
                 filters={[
                     {
@@ -58,22 +128,23 @@ export default function Seats() {
                         key: 'number',
                         operator: 'like',
                     },
-                    {
-                        title: 'Class',
-                        key: 'class',
-                        type: 'number',
-                    },
+                    // {
+                    //     title: 'Class',
+                    //     key: 'class',
+                    //     type: 'number',
+                    // },
                     {
                         title: 'WagonId',
                         key: 'wagonId',
                         renderField: (fieldProps) => <TrainWagonLookup resource={trainWagonsResource} {...fieldProps} />,
                     },
                     {
-                        title: 'Тип места: верхний/боковой/нижний',
+                        title: 'Тип места',
                         key: 'typeId',
                         renderField: (fieldProps) => <SeatTypeLookup resource={seatTypesResource} {...fieldProps} />,
                     },
                 ]}
+                {...props}
             />
         </>
     )

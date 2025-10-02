@@ -22,6 +22,17 @@ export const formatDateOnlyTime = (s, format = "HH:mm", offsetMinutes = DEFAULT_
     return formatDateTime(s, format, offsetMinutes);
 }
 
+export const adjustDateToTimezone = (date, offsetMinutes = DEFAULT_UTC_OFFSET_MINUTES) => {
+    if (!date)
+        return null;
+    if (isNaN(date.getTime()))
+        return null;
+    const localOffsetMinutes = -date.getTimezoneOffset();
+    const deltaMinutes = offsetMinutes - localOffsetMinutes;
+    const shifted = new Date(date.getTime() - deltaMinutes * 60000);
+    return shifted;
+}
+
 export const formatDate2 = (inputDateTimeStr) => {
     const inputDateTime = new Date(inputDateTimeStr);
     const day = inputDateTime.getDate();
