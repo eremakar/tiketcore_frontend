@@ -9,7 +9,6 @@ import WagonLookup from "@/app/(defaults)/wagons/lookup";
 import { formatDate } from "@/components/genA/functions/datetime";
 import { viewTypeIds } from "@/components/genA/v2/viewTypeIds";
 import { dataTableEventTypeIds } from "@/components/genA/v2/dataTableEventTypeIds";
-import IconRefresh from "@/components/icon/icon-refresh";
 import IconPlus from "@/components/icon/icon-plus";
 import IconMinus from "@/components/icon/icon-minus";
 import SeatSegments from "@/app/(defaults)/seatSegments/page";
@@ -39,7 +38,7 @@ export default function TrainWagons({ defaultQuery = null, fullHeight = false, o
     const seatSegmentsQuery = useMemo(() => {
         if (!currentExpandedWagonId) return null;
         return {
-            paging: { skip: 0, take: 50 },
+            paging: { skip: 0, take: 5000 },
             filter: {
                 wagonId: {
                     operand1: currentExpandedWagonId,
@@ -57,7 +56,7 @@ export default function TrainWagons({ defaultQuery = null, fullHeight = false, o
     }
 
     const trainSchedulesResource = useResource('trainSchedules');
-    const wagonsResource = useResource('wagons');
+    const wagonsResource = useResource('wagonModels');
     const trainWagonsResource = useResource('trainWagons');
     const [trainSchedules, setTrainSchedules] = useState([]);
     const [wagons, setWagons] = useState([]);
@@ -88,25 +87,6 @@ export default function TrainWagons({ defaultQuery = null, fullHeight = false, o
 
     // Check if trainScheduleId is filtered in query
     const isTrainScheduleFiltered = query?.filter?.trainScheduleId || defaultQuery?.filter?.trainScheduleId;
-
-    const handleGenerateSeats = async (wrappedRow) => {
-        try {
-            const row = wrappedRow?.row || wrappedRow;
-            const trainWagonId = row.id || row.key;
-            if (!trainWagonId) {
-                console.error('Train Wagon ID is undefined');
-                return;
-            }
-
-            // POST request to generate seats
-            await trainWagonsResource.post(`/${trainWagonId}/seats/generate`);
-
-            // Refresh data
-            fetch();
-        } catch (error) {
-            console.error('Error generating seats:', error);
-        }
-    };
 
     const toggleRowExpansion = (rowId) => {
         const newExpandedRows = new Set(expandedRows);
@@ -159,11 +139,17 @@ export default function TrainWagons({ defaultQuery = null, fullHeight = false, o
                 renderExpandedRow={(wrappedRow) => {
                     const rowId = wrappedRow?.row?.id || wrappedRow?.id;
                     if (expandedRows.has(rowId) && seatSegmentsQuery) {
-                        return <SeatSegments
-                            defaultQuery={seatSegmentsQuery}
-                            hideFilters={true}
-                            fullHeight={false}
-                        />;
+                        return (
+                            <div className="overflow-x-auto max-w-full" style={{ width: '100%' }}>
+                                <div style={{ minWidth: 'max-content' }}>
+                                    <SeatSegments
+                                        defaultQuery={seatSegmentsQuery}
+                                        hideFilters={true}
+                                        fullHeight={false}
+                                    />
+                                </div>
+                            </div>
+                        );
                     }
                     return null;
                 }}
@@ -213,26 +199,18 @@ export default function TrainWagons({ defaultQuery = null, fullHeight = false, o
                         options: {
                             items: wagons,
                             relationMemberName: 'wagonId',
-                            props: { mode: 'portal', labelMemberFunc: (item) => item.type?.shortName || '', valueMemberName: 'id' }
+                            props: { mode: 'portal', labelMemberName: 'name', valueMemberName: 'id' }
                         },
-                        render: (value) => value ? `${value.type?.shortName || ''} - ${value.seatCount || ''}` : ''
+                        render: (value) => value?.name || ''
                     },
                     {
                         key: 'seats',
                         title: 'Места',
                         isSortable: false,
-                        render: (value, row) => (
-                            <div className="flex items-center gap-2">
-                                {renderSeats(value)}
-                                <button
-                                    onClick={() => handleGenerateSeats(row)}
-                                    className="p-1 text-blue-500 hover:text-blue-700 hover:bg-blue-50 rounded transition-colors"
-                                    title="Сгенерировать места"
-                                >
-                                    <IconRefresh size={16} />
-                                </button>
-                            </div>
-                        )
+                        render: (value, row) => {
+                            const wagon = row?.row?.wagon || row?.wagon;
+                            return renderSeats(wagon?.seats);
+                        }
                     },
                     {
                         key: 'segments',

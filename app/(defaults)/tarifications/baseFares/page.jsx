@@ -1,8 +1,9 @@
 ﻿'use client';
 
-import ResourceTable from "@/components/genA/resourceTable";
+import ResourceTable2 from "@/components/genA/v2/resourceTable";
 import useResource from "@/hooks/useResource";
 import { useState } from "react";
+import { viewTypeIds } from "@/components/genA/v2/viewTypeIds";
 
 export default function BaseFares() {
     const [query, setQuery] = useState({
@@ -20,6 +21,7 @@ export default function BaseFares() {
     const [detailsShow, setDetailsShow] = useState(false);
 
     const [row, setRow] = useState(null);
+    const [data, setData] = useState([]);
     const resourceActionPostfix = "базовая ставка";
 
     const fetch = () => {
@@ -29,18 +31,20 @@ export default function BaseFares() {
     const resource = useResource('baseFares');
     return (
         <>
-            <ResourceTable
-                resource={resource}
+            <ResourceTable2
+                data={data}
+                setData={setData}
+                useResource={() => useResource('baseFares')}
                 resourceName={resourceActionPostfix}
                 query={query}
                 setQuery={setQuery}
                 filterMode="default"
                 sortMode="default"
-                hideDelete={false}
+                leftActions={true}
                 columns={[
                     { key: 'id', title: 'Ид', isSortable: true },
-                    { key: 'name', title: 'Name', isSortable: true },
-                    { key: 'price', title: 'Price', isSortable: true }
+                    { key: 'name', title: 'Name', isSortable: true, editable: true, type: viewTypeIds.text },
+                    { key: 'price', title: 'Price', isSortable: true, editable: true, type: viewTypeIds.float, decimalPlaces: 3 }
                 ]}
                 filters={[
                     {

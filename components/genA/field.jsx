@@ -44,6 +44,14 @@ export const Field = ({type = "text", orientation, value, onChange, options,  ..
                 value={value} onChange={(e) => {
                     onChange && onChange(e.target.value);
                 }} {...props} />
+        case "float":
+            const decimalPlaces = options?.decimalPlaces || 2;
+            const step = Math.pow(10, -decimalPlaces);
+            return <input type="number" step={step} placeholder={vertical ? props.placeholder : ""}
+                className="form-input"
+                value={value} onChange={(e) => {
+                    onChange && onChange(e.target.value);
+                }} {...props} />
         case "boolean":
         case "checkbox":
             return <label className="flex items-center cursor-pointer">

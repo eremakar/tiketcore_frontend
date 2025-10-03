@@ -148,8 +148,8 @@ const Header = () => {
 
     return (
         <header className={`z-40 ${themeConfig.semidark && themeConfig.menu === 'horizontal' ? 'dark' : ''}`}>
-            <div className="shadow-sm">
-                <div className="relative flex w-full items-center bg-white px-5 py-2.5 dark:bg-black">
+            <div className="shadow-lg">
+                <div className="relative flex w-full items-center bg-gradient-to-r from-blue-600 via-purple-600 to-pink-600 animate-gradient px-5 py-3 dark:from-blue-900 dark:via-purple-900 dark:to-pink-900 shimmer-effect">
                     <div className="horizontal-logo flex items-center justify-between ltr:mr-2 rtl:ml-2 lg:hidden">
                         <Link href="/" className="main-logo flex shrink-0 items-center">
                             <span className="inline w-48 ltr:-ml-1 rtl:-mr-1 font-extrabold uppercase tracking-wide text-primary">passticket</span>
@@ -158,7 +158,7 @@ const Header = () => {
                         </Link>
                         <button
                             type="button"
-                            className="collapse-icon flex flex-none rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary ltr:ml-2 rtl:mr-2 dark:bg-dark/40 dark:text-[#d0d2d6] dark:hover:bg-dark/60 dark:hover:text-primary lg:hidden"
+                            className="collapse-icon flex flex-none rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:scale-110 ltr:ml-2 rtl:mr-2 lg:hidden"
                             onClick={() => dispatch(toggleSidebar())}
                         >
                             <IconMenu className="h-5 w-5" />
@@ -166,25 +166,25 @@ const Header = () => {
                     </div>
 
                     <div className="hidden ltr:mr-2 rtl:ml-2 sm:block">
-                        <ul className="flex items-center space-x-2 rtl:space-x-reverse dark:text-[#d0d2d6]">
+                        <ul className="flex items-center space-x-2 rtl:space-x-reverse">
                             <li>
-                                <Link href="/apps/calendar" className="block rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60">
+                                <Link href="/apps/calendar" className="block rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:scale-110">
                                     <IconCalendar />
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/apps/todolist" className="block rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60">
+                                <Link href="/apps/todolist" className="block rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:scale-110">
                                     <IconEdit />
                                 </Link>
                             </li>
                             <li>
-                                <Link href="/apps/chat" className="block rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60">
+                                <Link href="/apps/chat" className="block rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:scale-110">
                                     <IconChatNotification />
                                 </Link>
                             </li>
                         </ul>
                     </div>
-                    <div className="flex items-center space-x-1.5 ltr:ml-auto rtl:mr-auto rtl:space-x-reverse dark:text-[#d0d2d6] sm:flex-1 ltr:sm:ml-0 sm:rtl:mr-0 lg:space-x-2">
+                    <div className="flex items-center space-x-1.5 ltr:ml-auto rtl:mr-auto rtl:space-x-reverse text-white sm:flex-1 ltr:sm:ml-0 sm:rtl:mr-0 lg:space-x-2">
                         <div className="sm:ltr:mr-auto sm:rtl:ml-auto">
                             <form
                                 className={`${search && '!block'} absolute inset-x-0 top-1/2 z-10 mx-4 hidden -translate-y-1/2 sm:relative sm:top-0 sm:mx-0 sm:block sm:translate-y-0`}
@@ -193,13 +193,13 @@ const Header = () => {
                                 <div className="relative">
                                     <input
                                         type="text"
-                                        className="peer form-input bg-gray-100 placeholder:tracking-widest ltr:pl-9 ltr:pr-9 rtl:pl-9 rtl:pr-9 sm:bg-transparent ltr:sm:pr-4 rtl:sm:pl-4"
+                                        className="peer form-input bg-white/20 text-white placeholder:text-white/70 placeholder:tracking-widest backdrop-blur-sm border-white/30 focus:border-white/50 ltr:pl-9 ltr:pr-9 rtl:pl-9 rtl:pr-9 sm:bg-white/20 ltr:sm:pr-4 rtl:sm:pl-4"
                                         placeholder="Search..."
                                     />
-                                    <button type="button" className="absolute inset-0 h-9 w-9 appearance-none peer-focus:text-primary ltr:right-auto rtl:left-auto">
+                                    <button type="button" className="absolute inset-0 h-9 w-9 appearance-none text-white peer-focus:text-white ltr:right-auto rtl:left-auto">
                                         <IconSearch className="mx-auto" />
                                     </button>
-                                    <button type="button" className="absolute top-1/2 block -translate-y-1/2 hover:opacity-80 ltr:right-2 rtl:left-2 sm:hidden" onClick={() => setSearch(false)}>
+                                    <button type="button" className="absolute top-1/2 block -translate-y-1/2 text-white hover:opacity-80 ltr:right-2 rtl:left-2 sm:hidden" onClick={() => setSearch(false)}>
                                         <IconXCircle />
                                     </button>
                                 </div>
@@ -207,18 +207,15 @@ const Header = () => {
                             <button
                                 type="button"
                                 onClick={() => setSearch(!search)}
-                                className="search_btn rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 dark:bg-dark/40 dark:hover:bg-dark/60 sm:hidden"
+                                className="search_btn rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:scale-110 sm:hidden"
                             >
-                                <IconSearch className="mx-auto h-4.5 w-4.5 dark:text-[#d0d2d6]" />
+                                <IconSearch className="mx-auto h-4.5 w-4.5" />
                             </button>
                         </div>
                         <div>
                             {themeConfig.theme === 'light' ? (
                                 <button
-                                    className={`${
-                                        themeConfig.theme === 'light' &&
-                                        'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60'
-                                    }`}
+                                    className="flex items-center rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:scale-110"
                                     onClick={() => dispatch(toggleTheme('dark'))}
                                 >
                                     <IconSun />
@@ -228,10 +225,7 @@ const Header = () => {
                             )}
                             {themeConfig.theme === 'dark' && (
                                 <button
-                                    className={`${
-                                        themeConfig.theme === 'dark' &&
-                                        'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60'
-                                    }`}
+                                    className="flex items-center rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:scale-110"
                                     onClick={() => dispatch(toggleTheme('system'))}
                                 >
                                     <IconMoon />
@@ -239,10 +233,7 @@ const Header = () => {
                             )}
                             {themeConfig.theme === 'system' && (
                                 <button
-                                    className={`${
-                                        themeConfig.theme === 'system' &&
-                                        'flex items-center rounded-full bg-white-light/40 p-2 hover:bg-white-light/90 hover:text-primary dark:bg-dark/40 dark:hover:bg-dark/60'
-                                    }`}
+                                    className="flex items-center rounded-full bg-white/20 p-2 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:scale-110"
                                     onClick={() => dispatch(toggleTheme('light'))}
                                 >
                                     <IconLaptop />
@@ -253,8 +244,8 @@ const Header = () => {
                             <Dropdown
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                btnClassName="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60"
-                                button={i18n.language && <img className="h-5 w-5 rounded-full object-cover" src={`/assets/images/flags/${i18n.language.toUpperCase()}.svg`} alt="flag" />}
+                                btnClassName="block p-2 rounded-full bg-white/20 backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:scale-110"
+                                button={i18n.language && <img className="h-5 w-5 rounded-full object-cover ring-2 ring-white/50" src={`/assets/images/flags/${i18n.language.toUpperCase()}.svg`} alt="flag" />}
                             >
                                 <ul className="grid w-[280px] grid-cols-2 gap-2 !px-2 font-semibold text-dark dark:text-white-dark dark:text-white-light/90">
                                     {themeConfig.languageList.map((item: any) => {
@@ -281,7 +272,7 @@ const Header = () => {
                             <Dropdown
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                btnClassName="block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60"
+                                btnClassName="block p-2 rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:scale-110"
                                 button={<IconMailDot />}
                             >
                                 <ul className="w-[300px] !py-0 text-xs text-dark dark:text-white-dark sm:w-[375px]">
@@ -336,13 +327,13 @@ const Header = () => {
                             <Dropdown
                                 offset={[0, 8]}
                                 placement={`${isRtl ? 'bottom-start' : 'bottom-end'}`}
-                                btnClassName="relative block p-2 rounded-full bg-white-light/40 dark:bg-dark/40 hover:text-primary hover:bg-white-light/90 dark:hover:bg-dark/60"
+                                btnClassName="relative block p-2 rounded-full bg-white/20 text-white backdrop-blur-sm transition-all duration-300 hover:bg-white/30 hover:scale-110"
                                 button={
                                     <span>
                                         <IconBellBing />
                                         <span className="absolute top-0 flex h-3 w-3 ltr:right-0 rtl:left-0">
-                                            <span className="absolute -top-[3px] inline-flex h-full w-full animate-ping rounded-full bg-success/50 opacity-75 ltr:-left-[3px] rtl:-right-[3px]"></span>
-                                            <span className="relative inline-flex h-[6px] w-[6px] rounded-full bg-success"></span>
+                                            <span className="absolute -top-[3px] inline-flex h-full w-full animate-ping rounded-full bg-yellow-400/50 opacity-75 ltr:-left-[3px] rtl:-right-[3px]"></span>
+                                            <span className="relative inline-flex h-[6px] w-[6px] rounded-full bg-yellow-400"></span>
                                         </span>
                                     </span>
                                 }

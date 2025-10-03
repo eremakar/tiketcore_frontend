@@ -6,6 +6,7 @@ import { useEffect, useState } from "react";
 import StationLookup from "@/app/(defaults)/stations/lookup";
 import RouteLookup from "@/app/(defaults)/routes/lookup";
 import TrainWagonsPlanLookup from "@/app/(defaults)/trainWagonsPlans/lookup";
+import TrainCategoryLookup from "@/app/(defaults)/tarifications/trainCategories/lookup";
 import { viewTypeIds } from "@/components/genA/v2/viewTypeIds";
 
 export default function Trains() {
@@ -25,21 +26,25 @@ export default function Trains() {
     const [stations, setStations] = useState([]);
     const [routes, setRoutes] = useState([]);
     const [trainWagonsPlans, setTrainWagonsPlans] = useState([]);
+    const [trainCategories, setTrainCategories] = useState([]);
     const stationsResource = useResource('stations');
     const routesResource = useResource('routes');
     const trainWagonsPlansResource = useResource('trainWagonsPlans');
+    const trainCategoriesResource = useResource('trainCategories');
 
     useEffect(() => {
         const loadRefs = async () => {
             try {
-                const [stRes, rtRes, twpRes] = await Promise.all([
+                const [stRes, rtRes, twpRes, tcRes] = await Promise.all([
                     stationsResource.search({ paging: { skip: 0 } }),
                     routesResource.search({ paging: { skip: 0 } }),
-                    trainWagonsPlansResource.search({ paging: { skip: 0 } })
+                    trainWagonsPlansResource.search({ paging: { skip: 0 } }),
+                    trainCategoriesResource.search({ paging: { skip: 0 } })
                 ]);
                 setStations(stRes?.result || []);
                 setRoutes(rtRes?.result || []);
                 setTrainWagonsPlans(twpRes?.result || []);
+                setTrainCategories(tcRes?.result || []);
             } catch (e) {
                 console.error(e);
             }
@@ -120,6 +125,20 @@ export default function Trains() {
                         },
                         render: (value) => value?.name
                     },
+                    {
+                        key: 'category',
+                        title: 'Category',
+                        isSortable: true,
+                        editable: true,
+                        type: viewTypeIds.select,
+                        options: {
+                            items: trainCategories,
+                            relationMemberName: 'categoryId',
+                            primitive: false,
+                            props: { mode: 'portal', labelMemberName: 'name', valueMemberName: 'id' }
+                        },
+                        render: (value) => value?.name
+                    },
                 ]}
                 filters={[
                     {
@@ -158,6 +177,11 @@ export default function Trains() {
                         title: 'TrainWagonsPlanId',
                         key: 'trainWagonsPlanId',
                         renderField: (fieldProps) => <TrainWagonsPlanLookup resource={trainWagonsPlansResource} {...fieldProps} />,
+                    },
+                    {
+                        title: 'TrainCategoryId',
+                        key: 'trainCategoryId',
+                        renderField: (fieldProps) => <TrainCategoryLookup resource={trainCategoriesResource} {...fieldProps} />,
                     },
                 ]}
             />

@@ -9,8 +9,8 @@ export class DataSource {
         if (!response) {
             return { total: 0, result: [] };
         }
-        if (this.mapFunc) {
-            response.result = response.result?.map(this.mapFunc) || response.result;
+        if (this.mapFunc && response.result) {
+            response.result = this.mapFunc(response.result);
         }
         return response;
     }

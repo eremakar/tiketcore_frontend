@@ -2,8 +2,12 @@ import {useRouter} from "next/navigation";
 
 export function ResourceService(env, resourceUrl, microserviceUrl = '', version = 1) {
     this.env = env;
-    const url = this.env.api.url;
-    const microservicePrefix = microserviceUrl ? '/' + microserviceUrl : '';
+    // Проверяем есть ли прямой URL микросервиса в env
+    const hasMicroserviceUrl = microserviceUrl && this.env[microserviceUrl];
+    // Если есть прямой URL - используем его, иначе api.url
+    const url = hasMicroserviceUrl ? this.env[microserviceUrl].url : this.env.api.url;
+    // Префикс нужен только если microserviceUrl указан, но прямого URL нет
+    const microservicePrefix = (microserviceUrl && !hasMicroserviceUrl) ? '/' + microserviceUrl : '';
     const baseUrl = resourceUrl ? `${microservicePrefix}/api/v${version}/${resourceUrl}` : `/api/v${version}`;
     let router = useRouter();
     const routeChangeToAuth = () =>{

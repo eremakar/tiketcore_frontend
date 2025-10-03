@@ -31,7 +31,7 @@ export default function TrainWagonsPlanWagons({ defaultQuery, fullHeight, onData
     }
 
     const resource = useResource('trainWagonsPlanWagons');
-    const wagonsResource = useResource('wagons');
+    const wagonsResource = useResource('wagonModels');
     const [wagons, setWagons] = useState([]);
 
     // Load wagons for dropdown
@@ -95,9 +95,9 @@ export default function TrainWagonsPlanWagons({ defaultQuery, fullHeight, onData
                         options: {
                             items: wagons,
                             relationMemberName: 'wagonId',
-                            props: { mode: 'portal', labelMemberFunc: (item) => item.type?.shortName || '', valueMemberName: 'id' }
+                            props: { mode: 'portal', labelMemberName: 'name', valueMemberName: 'id' }
                         },
-                        render: (value) => value ? `${value.type?.shortName || ''} - ${value.seatCount || ''}` : ''
+                        render: (value) => value?.name || ''
                     },
                     {
                         key: 'wagon.type.shortName',

@@ -27,7 +27,7 @@ export default function TrainWagonsPlanWagonSubmit({show, setShow, resourceName,
     const number = watch('number');
     const planId = watch('planId');
     const wagonId = watch('wagonId');
-    const wagonsResource = useResource('wagons');
+    const wagonsResource = useResource('wagonModels');
     return (
         <ResourceSubmit resource={resource} show={show} setShow={setShow} resourceName={resourceName} resourceMode={resourceMode} resourceData={resourceData} onResourceSubmitted={onResourceSubmitted} onSubmit={async handler => { handleSubmit(handler)(); }}>
             <HookForm methods={methods} data={resourceData}>

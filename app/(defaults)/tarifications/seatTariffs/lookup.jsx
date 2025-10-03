@@ -15,14 +15,10 @@ export default function SeatTariffLookup({useResource, resource, name, label, op
                     columns: [
                         { key: 'id', title: 'Ид', isSortable: true },
                         { key: 'name', title: 'Name', isSortable: true },
-                        { key: 'price', title: 'Price', isSortable: true },
-                        { key: 'baseFare', title: 'BaseFare', isSortable: true, render: (value) => value?.name },
                         { key: 'train', title: 'Train', isSortable: true, render: (value) => value?.name },
+                        { key: 'baseFare', title: 'BaseFare', isSortable: true, render: (value) => value?.name },
                         { key: 'trainCategory', title: 'TrainCategory', isSortable: true, render: (value) => value?.name },
-                        { key: 'wagonClass', title: 'WagonClass', isSortable: true, render: (value) => value?.name },
-                        { key: 'season', title: 'Season', isSortable: true, render: (value) => value?.name },
-                        { key: 'seatType', title: 'SeatType', isSortable: true, render: (value) => value?.name },
-                        { key: 'connection', title: 'соединение станций', isSortable: true, render: (value) => value?.name }
+                        { key: 'items', title: 'Items', isSortable: true, render: (value) => value?.name }
                     ],
                     filters: [
                         {
@@ -35,37 +31,16 @@ export default function SeatTariffLookup({useResource, resource, name, label, op
                             operator: 'like',
                         },
                         {
-                            title: 'Price',
-                            key: 'price',
-                            type: 'number',
+                            title: 'TrainId',
+                            key: 'trainId'
                         },
                         {
                             title: 'BaseFareId',
                             key: 'baseFareId'
                         },
                         {
-                            title: 'TrainId',
-                            key: 'trainId'
-                        },
-                        {
                             title: 'TrainCategoryId',
                             key: 'trainCategoryId'
-                        },
-                        {
-                            title: 'WagonClassId',
-                            key: 'wagonClassId'
-                        },
-                        {
-                            title: 'SeasonId',
-                            key: 'seasonId'
-                        },
-                        {
-                            title: 'SeatTypeId',
-                            key: 'seatTypeId'
-                        },
-                        {
-                            title: 'соединение станций',
-                            key: 'connectionId'
                         }
                     ],
                     actions: {}

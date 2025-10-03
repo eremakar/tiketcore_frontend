@@ -14,6 +14,7 @@ export default function WagonLookup({useResource, resource, name, label, options
                     ...options?.table,
                     columns: [
                         { key: 'id', title: 'Ид', isSortable: true },
+                        { key: 'name', title: 'Name', isSortable: true },
                         { key: 'type', title: 'Type', isSortable: true },
                         { key: 'seatCount', title: 'SeatCount', isSortable: true },
                         { key: 'pictureS3', title: 'PictureS3', isSortable: true },
@@ -23,6 +24,11 @@ export default function WagonLookup({useResource, resource, name, label, options
                         {
                             title: 'Ид',
                             key: 'id'
+                        },
+                        {
+                            title: 'Name',
+                            key: 'name',
+                            operator: 'like',
                         },
                         {
                             title: 'Type',

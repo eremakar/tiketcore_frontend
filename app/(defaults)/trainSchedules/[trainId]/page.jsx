@@ -11,6 +11,7 @@ import IconPowerOff from "@/components/icon/icon-power-off";
 import IconWheel from "@/components/icon/icon-wheel";
 import IconX from "@/components/icon/icon-x";
 import Link from "next/link";
+import TrainScheduleSubmit from "@/app/(defaults)/trainSchedules/submit";
 
 export default function TrainSchedulesDetails({ params }) {
     const trainId = useMemo(() => Number(params?.trainId), [params?.trainId]);
@@ -35,7 +36,12 @@ export default function TrainSchedulesDetails({ params }) {
 
     const [isWagonsDrawerOpen, setIsWagonsDrawerOpen] = useState(false);
 
+    const [isCreateOpen, setIsCreateOpen] = useState(false);
+
+    const [seatTariffs, setSeatTariffs] = useState([]);
+
     const trainSchedulesResource = useResource('trainSchedules');
+    const seatTariffsResource = useResource('seatTariffs');
 
     useEffect(() => {
         if (!trainId) return;
@@ -43,6 +49,23 @@ export default function TrainSchedulesDetails({ params }) {
             ...q,
             filter: { trainId: { operand1: trainId, operator: 'equals' } }
         }));
+    }, [trainId]);
+
+    useEffect(() => {
+        const fetchSeatTariffs = async () => {
+            if (!trainId) return;
+            try {
+                const response = await seatTariffsResource.search({
+                    paging: { skip: 0, take: 1000 },
+                    filter: { trainId: { operand1: trainId, operator: 'equals' } },
+                    sort: { id: { operator: 'desc' } }
+                });
+                setSeatTariffs(response?.result || []);
+            } catch (error) {
+                console.error('Error loading seat tariffs:', error);
+            }
+        };
+        fetchSeatTariffs();
     }, [trainId]);
 
     const handleTrainScheduleSelect = (e, wrappedRow) => {
@@ -102,7 +125,15 @@ export default function TrainSchedulesDetails({ params }) {
         <div className="p-4 flex flex-col h-full">
             <div className="flex items-center justify-between mb-4">
                 <h2 className="text-lg font-semibold">Расписания</h2>
-                <Link className="btn btn-sm" href="/trainSchedules">Назад к поездам</Link>
+                <div className="flex items-center gap-2">
+                    <button
+                        className="btn btn-sm"
+                        onClick={() => setIsCreateOpen(true)}
+                    >
+                        Создать расписание
+                    </button>
+                    <Link className="btn btn-sm" href="/trainSchedules">Назад к поездам</Link>
+                </div>
             </div>
             <div className="border border-gray-300 rounded-md p-3 mb-4">
                 <ResourceTable2
@@ -123,6 +154,20 @@ export default function TrainSchedulesDetails({ params }) {
                     columns={[
                         { key: 'id', title: 'Ид', isSortable: true, style: { width: '60px' } },
                         { key: 'date', title: 'Дата', isSortable: true, editable: true, type: viewTypeIds.date, render: (value) => formatDate(value) },
+                        {
+                            key: 'seatTariff',
+                            title: 'Тариф мест',
+                            isSortable: true,
+                            editable: true,
+                            type: viewTypeIds.select,
+                            options: {
+                                items: seatTariffs,
+                                relationMemberName: 'seatTariffId',
+                                primitive: false,
+                                props: { mode: 'portal', labelMemberName: 'name', valueMemberName: 'id' }
+                            },
+                            render: (value) => value?.name
+                        },
                         {
                             key: 'active',
                             title: 'Активен',
@@ -162,10 +207,24 @@ export default function TrainSchedulesDetails({ params }) {
                     filters={[
                         { title: 'Ид', key: 'id' },
                         { title: 'Дата', key: 'date', type: 'datetime' },
+                        { title: 'Тариф мест', key: 'seatTariffId' },
                         { title: 'Активен', key: 'active', type: 'boolean' },
                     ]}
                 />
             </div>
+
+            <TrainScheduleSubmit
+                show={isCreateOpen}
+                setShow={setIsCreateOpen}
+                resourceName="расписание поезда по дням"
+                resource={trainSchedulesResource}
+                resourceMode="create"
+                onResourceSubmitted={() => {
+                    setIsCreateOpen(false);
+                    setTrainSchedulesQuery({ ...trainSchedulesQuery });
+                    setRefreshKey((prev) => prev + 1);
+                }}
+            />
 
             {/* Right Drawer for Train Wagons */}
             <div className={`fixed inset-0 z-50 ${isWagonsDrawerOpen ? '' : 'pointer-events-none'}`}>
