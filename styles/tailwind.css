@@ -245,7 +245,7 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
     }
 
     .btn-primary {
-        @apply border-primary bg-primary text-white shadow-primary/60;
+        @apply border-primary bg-primary text-white rounded-xl shadow-[0_14px_28px_-10px_rgba(67,97,238,0.55)] hover:shadow-[0_18px_32px_-10px_rgba(67,97,238,0.60)] transition;
     }
     .btn-outline-primary {
         @apply border-primary text-primary shadow-none hover:bg-primary hover:text-white;
@@ -296,6 +296,14 @@ hover:text-primary hover:before:!bg-primary ltr:before:mr-2 rtl:before:ml-2 dark
 
     .btn-gradient {
         @apply bg-gradient-to-r from-[#EF1262] to-[#4361EE] text-white hover:from-[#4361EE] hover:to-[#EF1262];
+    }
+
+    /* Neo icon buttons (blue rounded with soft shadow) */
+    .btn-neo {
+        @apply border-transparent bg-primary text-white rounded-xl shadow-[0_14px_28px_-10px_rgba(67,97,238,0.55)] hover:shadow-[0_18px_32px_-10px_rgba(67,97,238,0.6)] transition;
+    }
+    .btn-icon {
+        @apply w-12 h-12 p-0 grid place-content-center;
     }
 
     /* Badge */

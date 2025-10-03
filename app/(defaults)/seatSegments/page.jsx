@@ -175,6 +175,17 @@ export default function SeatSegments({ defaultQuery = null, hideFilters = false,
                             { key: 'wagon', title: 'Вагон', isSortable: true, render: (value) => value?.number }
                         ]),
                         { key: 'seat', title: 'Место', isSortable: true, render: (value) => value?.number },
+                        {
+                            key: 'legend',
+                            title: 'Легенда',
+                            isSortable: false,
+                            render: () => (
+                                <div className="flex items-center gap-2 text-xs">
+                                    <span className="px-2 py-0.5 bg-blue-100 border border-blue-300 rounded">свободно</span>
+                                    <span className="px-2 py-0.5 bg-orange-100 border border-orange-300 rounded">резерв</span>
+                                </div>
+                            )
+                        },
                     ];
 
                     if (segmentPairs.length > 0) {

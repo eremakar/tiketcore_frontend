@@ -152,7 +152,7 @@ const Header = () => {
                 <div className="relative flex w-full items-center bg-white px-5 py-2.5 dark:bg-black">
                     <div className="horizontal-logo flex items-center justify-between ltr:mr-2 rtl:ml-2 lg:hidden">
                         <Link href="/" className="main-logo flex shrink-0 items-center">
-                            <img className="inline w-48 ltr:-ml-1 rtl:-mr-1" src="/assets/images/logo.png" alt="logo" />
+                            <span className="inline w-48 ltr:-ml-1 rtl:-mr-1 font-extrabold uppercase tracking-wide text-primary">passticket</span>
 
                             <span className="hidden align-middle text-2xl  font-semibold  transition-all duration-300 ltr:ml-1.5 rtl:mr-1.5 dark:text-white-light md:inline"></span>
                         </Link>

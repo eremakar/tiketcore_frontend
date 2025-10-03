@@ -132,7 +132,7 @@ export default function RouteStations({ defaultQuery = null, fullHeight = false,
                 enableCellEditOnDoubleClick={false}
                 fullHeight={fullHeight}
                 renderAdvancedActions={() => isRouteFiltered ? (
-                    <button type="button" className="btn btn-primary" onClick={() => setAddStationsShow(true)}>Добавить станции</button>
+                    <button type="button" className="btn btn-neo" onClick={() => setAddStationsShow(true)}>Добавить станции</button>
                 ) : null}
                 onChange={async (e) => {
                     const wrappedRow = e.target;
@@ -314,7 +314,7 @@ export default function RouteStations({ defaultQuery = null, fullHeight = false,
                         />
                     </div>
                     <div className="flex gap-2">
-                        <button type="button" className="btn btn-primary btn-sm" onClick={() => {
+                        <button type="button" className="btn btn-neo btn-sm" onClick={() => {
                             const map = new Map();
                             selectedStations.forEach(r => map.set(r.id, r));
                             modalPageRows.forEach(r => map.set(r.id, r));

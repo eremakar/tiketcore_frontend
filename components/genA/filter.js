@@ -93,11 +93,11 @@ const Filter = ({query, setQuery, schema, rows, mode, part, show, setShow, onCha
                             {fields}
                         </Fields>
                         <div className="flex gap-2" style={{paddingTop: '20px'}}>
-                            <button type="button" class="btn btn-primary" onClick={() => fetch()}>Поиск</button>
-                            <button type="button" class="btn btn-outline-primary" onClick={() => clear()}>Очистить фильтр</button>
+                            <button type="button" className="btn btn-neo" onClick={() => fetch()}>Поиск</button>
+                            <button type="button" className="btn btn-outline-primary" onClick={() => clear()}>Очистить фильтр</button>
                         </div>
                     </div>} placement="right">
-                    <button type="button" class="btn btn-primary" onClick={() => setDetailsShow(!detailsShow)}>
+                    <button type="button" className="btn btn-neo btn-icon" onClick={() => setDetailsShow(!detailsShow)}>
                         <IconSearch />
                     </button>
                 </Tippy>
@@ -105,7 +105,7 @@ const Filter = ({query, setQuery, schema, rows, mode, part, show, setShow, onCha
         default:
             switch (part) {
                 case 1:
-                    return <Tippy content="Фильтр"><button type="button" class="btn btn-primary" onClick={() => setShow(!show)}>
+                    return <Tippy content="Фильтр"><button type="button" className="btn btn-neo btn-icon" onClick={() => setShow(!show)}>
                         <IconSearch />
                     </button></Tippy>
                 case 2:
@@ -114,8 +114,8 @@ const Filter = ({query, setQuery, schema, rows, mode, part, show, setShow, onCha
                             {fields}
                         </Fields>
                         <div className="flex gap-2" style={{paddingTop: '20px'}}>
-                            <button type="button" class="btn btn-primary" onClick={() => fetch()}>Поиск</button>
-                            <button type="button" class="btn btn-outline-primary" onClick={() => clear()}>Очистить фильтр</button>
+                            <button type="button" className="btn btn-neo" onClick={() => fetch()}>Поиск</button>
+                            <button type="button" className="btn btn-outline-primary" onClick={() => clear()}>Очистить фильтр</button>
                         </div>
                     </>
             }
