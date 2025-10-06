@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { FormProvider, useForm } from 'react-hook-form';
 import FormErrors from '@/components/genA/formErrors';
 
-export default function HookForm({ data, onSubmit, methods, children, style, isValidated = true, ...props }) {
+export default function HookForm({ data, onSubmit, methods, children, style, isValidated = true, validateOnInput = false, ...props }) {
     const {
         trigger,
         formState: {isValid, errors},
@@ -13,7 +13,8 @@ export default function HookForm({ data, onSubmit, methods, children, style, isV
         if (!data)
             return;
         reset(data);
-        if (isValidated)
+        // Show validation errors immediately only if validateOnInput is true
+        if (isValidated && validateOnInput)
             trigger();
     }, [data]);
 

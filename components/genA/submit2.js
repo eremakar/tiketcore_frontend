@@ -3,7 +3,7 @@ import { Fragment } from "react";
 import { Transition, Dialog, DialogPanel, TransitionChild } from '@headlessui/react';
 import IconX from '@/components/icon/icon-x';
 
-const Submit2 = ({show, setShow, title, data, submitDisabled, children, onSubmit, submitError, onMap, size = 'lg', dialogClassName="", closeTitle="Закрыть", submitTitle="Сохранить",  ...props}) => {
+const Submit2 = ({show, setShow, title, data, submitDisabled, children, onSubmit, submitError, onMap, size = 'lg', dialogClassName="", closeTitle="Закрыть", submitTitle="Сохранить", closeButtonClass="btn btn-outline-danger", submitButtonClass="btn btn-outline-primary",  ...props}) => {
     useEffect(() => {
         if (!show || !data)
             return;
@@ -47,10 +47,10 @@ const Submit2 = ({show, setShow, title, data, submitDisabled, children, onSubmit
                                 {children}
                                 {submitError && <label style={{color: 'red'}}>{submitError}</label>}
                                 <div class="flex justify-end items-center mt-8">
-                                    <button type="button" className="btn btn-outline-danger" onClick={close}>
+                                    <button type="button" className={closeButtonClass} onClick={close}>
                                         {closeTitle}
                                     </button>
-                                    <button type="button" className="btn btn-outline-primary ltr:ml-4 rtl:mr-4" onClick={onSubmit} disabled={submitDisabled}>
+                                    <button type="button" className={`${submitButtonClass} ltr:ml-4 rtl:mr-4`} onClick={onSubmit} disabled={submitDisabled}>
                                         {submitTitle}
                                     </button>
                                 </div>

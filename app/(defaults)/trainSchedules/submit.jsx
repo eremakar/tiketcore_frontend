@@ -410,7 +410,7 @@ export default function TrainScheduleSubmit({show, setShow, resourceName, resour
                                                     key={dayIndex}
                                                     className={`
                                                         p-3 border-r border-b border-gray-200 min-h-[60px] transition-all
-                                                        ${isOccupied ? 'bg-red-100 cursor-not-allowed opacity-60' : 'cursor-pointer hover:bg-blue-50'}
+                                                        ${isOccupied ? 'bg-green-100 cursor-not-allowed opacity-60' : 'cursor-pointer hover:bg-blue-50'}
                                                         ${isSelected && !isOccupied ? 'bg-blue-100 border-blue-400' : ''}
                                                         ${!isOccupied && !isSelected ? 'bg-white' : ''}
                                                         ${isToday ? 'ring-2 ring-yellow-400' : ''}
@@ -428,12 +428,9 @@ export default function TrainScheduleSubmit({show, setShow, resourceName, resour
                                                             className="mb-2"
                                                             onClick={(e) => e.stopPropagation()}
                                                         />
-                                                        <span className={`text-lg font-medium ${isOccupied ? 'text-red-400 line-through' : isToday ? 'text-yellow-600 font-bold' : isWeekend ? 'text-red-600' : 'text-gray-700'}`}>
+                                                        <span className={`text-lg font-medium ${isOccupied ? 'text-green-600' : isToday ? 'text-yellow-600 font-bold' : isWeekend ? 'text-red-600' : 'text-gray-700'}`}>
                                                             {dayNumber}
                                                         </span>
-                                                        {isOccupied && (
-                                                            <span className="text-xs text-red-500 mt-1">Занято</span>
-                                                        )}
                                                     </div>
                                                 </div>
                                             );

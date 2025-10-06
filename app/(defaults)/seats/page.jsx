@@ -6,6 +6,7 @@ import useResource from "@/hooks/useResource";
 import { useState, useEffect } from "react";
 import TrainWagonLookup from "@/app/(defaults)/trainWagons/lookup";
 import SeatTypeLookup from "@/app/(defaults)/seatTypes/lookup";
+import WagonPurposeLookup from "@/app/(defaults)/wagonPurposes/lookup";
 import { viewTypeIds } from "@/components/genA/v2/viewTypeIds";
 import { dataTableEventTypeIds } from "@/components/genA/v2/dataTableEventTypeIds";
 
@@ -31,7 +32,9 @@ export default function Seats({ defaultQuery = null, fullHeight = false, hideFil
     const resource = useResource('seats');
     const trainWagonsResource = useResource('trainWagons');
     const seatTypesResource = useResource('seatTypes');
+    const wagonPurposesResource = useResource('wagonPurposes');
     const [seatTypes, setSeatTypes] = useState([]);
+    const [wagonPurposes, setWagonPurposes] = useState([]);
 
     const fetch = () => {
         setQuery({...query});
@@ -49,7 +52,7 @@ export default function Seats({ defaultQuery = null, fullHeight = false, hideFil
         return result;
     }
 
-    // Load seat types for dropdown
+    // Load seat types and wagon purposes for dropdown
     useEffect(() => {
         const loadSeatTypes = async () => {
             try {
@@ -59,7 +62,16 @@ export default function Seats({ defaultQuery = null, fullHeight = false, hideFil
                 console.error(e);
             }
         };
+        const loadWagonPurposes = async () => {
+            try {
+                const wagonPurposesRes = await wagonPurposesResource.search({ paging: { skip: 0 } });
+                setWagonPurposes(wagonPurposesRes?.result || []);
+            } catch (e) {
+                console.error(e);
+            }
+        };
         loadSeatTypes();
+        loadWagonPurposes();
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
 
@@ -117,6 +129,19 @@ export default function Seats({ defaultQuery = null, fullHeight = false, hideFil
                         },
                         render: (value) => value?.name || ''
                     },
+                    {
+                        key: 'purpose',
+                        title: 'Назначение',
+                        isSortable: true,
+                        editable: true,
+                        type: viewTypeIds.select,
+                        options: {
+                            items: wagonPurposes,
+                            relationMemberName: 'purposeId',
+                            props: { mode: 'portal', labelMemberName: 'name', valueMemberName: 'id' }
+                        },
+                        render: (value) => value?.name || ''
+                    },
                 ]}
                 filters={[
                     {
@@ -142,6 +167,11 @@ export default function Seats({ defaultQuery = null, fullHeight = false, hideFil
                         title: 'Тип места',
                         key: 'typeId',
                         renderField: (fieldProps) => <SeatTypeLookup resource={seatTypesResource} {...fieldProps} />,
+                    },
+                    {
+                        title: 'Назначение',
+                        key: 'purposeId',
+                        renderField: (fieldProps) => <WagonPurposeLookup resource={wagonPurposesResource} {...fieldProps} />,
                     },
                 ]}
                 {...props}

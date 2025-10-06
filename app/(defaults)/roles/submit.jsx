@@ -26,10 +26,10 @@ export default function RoleSubmit({show, setShow, resourceName, resource, resou
     const code = watch('code');
     return (
         <ResourceSubmit resource={resource} show={show} setShow={setShow} resourceName={resourceName} resourceMode={resourceMode} resourceData={resourceData} onResourceSubmitted={onResourceSubmitted} onSubmit={async handler => { handleSubmit(handler)(); }}>
-            <HookForm methods={methods} data={resourceData}>
+            <HookForm methods={methods} data={resourceData} validateOnInput={false}>
                 <Fields>
-                    <FormField type="text" name="name" label="Name" value={name} error={errors.name?.message} trigger={trigger} onChange={value => setValue('name', value)} isValidated={true} />
-                    <FormField type="text" name="code" label="Code" value={code} error={errors.code?.message} trigger={trigger} onChange={value => setValue('code', value)} isValidated={true} />
+                    <FormField type="text" name="name" label="Name" value={name} error={errors.name?.message} trigger={trigger} onChange={value => setValue('name', value)} isValidated={true} validateOnInput={false} />
+                    <FormField type="text" name="code" label="Code" value={code} error={errors.code?.message} trigger={trigger} onChange={value => setValue('code', value)} isValidated={true} validateOnInput={false} />
                 </Fields>
             </HookForm>
         </ResourceSubmit>

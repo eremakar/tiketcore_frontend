@@ -63,25 +63,47 @@ export const Field = ({type = "text", orientation, value, onChange, options,  ..
                 <span className=" text-white-dark">{props.label || props.placeholder}</span>
             </label>
         case "multicheckbox":
-            return <div className="flex flex-col">
-                {options.map((option) => (
-                    <label key={option} className="flex items-center cursor-pointer">
-                        <input type="checkbox" className="form-checkbox"
-                            checked={value && value.includes(option)}
-                            onChange={() => {
-                                if (!value || !value.push)
-                                    return;
+            // Handle both old format (array) and new format (object with items and columns)
+            const items = Array.isArray(options) ? options : (options?.items || []);
+            const columns = (Array.isArray(options) ? 1 : options?.columns) || 1;
+            const itemsPerColumn = Math.ceil(items.length / columns);
+            const columnItems = [];
+            
+            for (let i = 0; i < columns; i++) {
+                const startIndex = i * itemsPerColumn;
+                const endIndex = Math.min(startIndex + itemsPerColumn, items.length);
+                columnItems.push(items.slice(startIndex, endIndex));
+            }
+            
+            return <div className="flex flex-col lg:flex-row gap-4">
+                {columnItems.map((columnOptions, columnIndex) => (
+                    <div key={columnIndex} className="flex flex-col flex-1">
+                        {columnOptions.map((option) => {
+                            // Handle both string and object formats
+                            const optionValue = typeof option === 'string' ? option : option.value;
+                            const optionLabel = typeof option === 'string' ? option : option.label;
+                            const optionKey = typeof option === 'string' ? option : option.value;
+                            
+                            return (
+                                <label key={optionKey} className="flex items-center cursor-pointer">
+                                    <input type="checkbox" className="form-checkbox"
+                                        checked={value && value.includes(optionValue)}
+                                        onChange={() => {
+                                            if (!value || !value.push)
+                                                return;
 
-                                const selected = value.includes(option) ?
-                                    value.filter((_) => _ !== option) :
-                                    [...value, option];
-                                    onChange && onChange(selected);
-                            }}
-                        />
-                        <span className=" text-white-dark">{option}</span>
-                    </label>
-                    )
-                )}
+                                            const selected = value.includes(optionValue) ?
+                                                value.filter((_) => _ !== optionValue) :
+                                                [...value, optionValue];
+                                                onChange && onChange(selected);
+                                        }}
+                                    />
+                                    <span className=" text-white-dark">{optionLabel}</span>
+                                </label>
+                            );
+                        })}
+                    </div>
+                ))}
             </div>
         case "date":
             return <Flatpickr

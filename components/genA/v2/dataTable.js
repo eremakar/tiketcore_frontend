@@ -198,14 +198,14 @@ const DataTable2Inner = ({
     if (leftActionsAdd) {
       if (index == 0 && workingData.length > 0 && leftActionAdd) {
         result.push(<button className="btn btn-sm btn-xsm prevent" style={{marginRight:'2px'}} onClick={async (e) => {
-          e.stopPropagation();
+          e.preventDefault();
           await addRowAtStart();
         }}><IconPlus /></button>);
       }
 
       if (index == workingData.length - 1 && workingData.length > 1 && leftActionAdd) {
         result.push(<button className="btn btn-sm btn-xsm prevent" style={{marginRight:'2px'}} onClick={async (e) => {
-          e.stopPropagation();
+          e.preventDefault();
           await addRowAtEnd();
         }}><IconPlus /></button>);
       }
@@ -214,11 +214,11 @@ const DataTable2Inner = ({
     if (rowEditModeIsManual) {
       if (isEdit) {
         result.push(<button className="btn btn-sm btn-xsm prevent" style={{marginRight:'2px'}} onClick={async (e) => {
-          e.stopPropagation();
+          e.preventDefault();
           await commit(wrappedRow, data, changingRow);
         }}><IconSquareCheck /></button>);
         result.push(<button className="btn btn-sm btn-xsm prevent" style={{marginRight:'2px'}} onClick={async (e) => {
-          e.stopPropagation();
+          e.preventDefault();
           if (row.id)
             await rollback(wrappedRow, data);
           else {
@@ -227,7 +227,7 @@ const DataTable2Inner = ({
         }}><IconX /></button>);
       } else if (leftActionEdit) {
         result.push(<button className="btn btn-sm btn-xsm prevent" style={{marginRight:'2px'}} onClick={async (e) => {
-          e.stopPropagation();
+          e.preventDefault();
           await editRow(wrappedRow, data, true);
         }}><IconEdit /></button>);
       }
@@ -383,7 +383,7 @@ const DataTable2Inner = ({
         onChange={async (_, type, mode) => {
           setChangingRow(_);
 
-          if (mode == 'list') {
+          if (mode == 'list' || mode == 'editCommitted') {
             if (onChange)
               await onChange({ target: wrappedRow, data: { context: context, type: 'blur', mode: mode }, type: dataTableEventTypeIds.commitRow });
             return;
@@ -703,7 +703,7 @@ const DataTable2Inner = ({
                                       onChange={async (_, type, mode) => {
                                         setChangingRow(_);
 
-                                        if (mode == 'list') {
+                                        if (mode == 'list' || mode == 'editCommitted') {
                                           if (onChange)
                                             await onChange({ target: wrappedRow, data: { context: context, type: 'blur', mode: mode }, type: dataTableEventTypeIds.commitRow });
                                           return;
@@ -736,7 +736,7 @@ const DataTable2Inner = ({
 
         for (let i = 0; i < projectedData.length; i++) {
           const item = projectedData[i];
-          const parentId = item.row[hierarchyMember];
+          const parentId = hierarchyMember ? item.row[hierarchyMember] : null;
           if (!parentId) {
             projectedData2.push(item);
           } else {
@@ -746,7 +746,7 @@ const DataTable2Inner = ({
             }
           }
         }
-        console.log(projectedData2);
+        //console.log(projectedData2);
 
         return (
           <div className={`table-responsive mb-5 flex ${fullHeight ? 'h-full flex-col' : 'items-center justify-between'}`} ref={drop} style={{...props.style}}>
@@ -818,7 +818,7 @@ const DataTable2Inner = ({
                             onChange={async (_, type, mode) => {
                               setChangingRow(_);
 
-                              if (mode == 'list') {
+                              if (mode == 'list' || mode == 'editCommitted') {
                                 if (onChange)
                                   await onChange({ target: _, data: { context: context, type: 'blur', mode: mode }, type: dataTableEventTypeIds.commitRow });
                                 return;
@@ -879,7 +879,7 @@ const DataTable2Inner = ({
                             onChange={async (_, type, mode) => {
                               setChangingRow(_);
 
-                              if (mode == 'list') {
+                              if (mode == 'list' || mode == 'editCommitted') {
                                 if (onChange)
                                   await onChange({ target: _, data: { context: context, type: 'blur', mode: mode }, type: dataTableEventTypeIds.commitRow });
                                 return;

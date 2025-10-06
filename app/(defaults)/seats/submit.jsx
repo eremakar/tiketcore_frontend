@@ -33,12 +33,12 @@ export default function SeatSubmit({show, setShow, resourceName, resource, resou
     const seatTypesResource = useResource('seatTypes');
     return (
         <ResourceSubmit resource={resource} show={show} setShow={setShow} resourceName={resourceName} resourceMode={resourceMode} resourceData={resourceData} onResourceSubmitted={onResourceSubmitted} onSubmit={async handler => { handleSubmit(handler)(); }}>
-            <HookForm methods={methods} data={resourceData}>
+            <HookForm methods={methods} data={resourceData} validateOnInput={false}>
                 <Fields>
-                    <FormField type="text" name="number" label="Number" value={number} error={errors.number?.message} trigger={trigger} onChange={value => setValue('number', value)} isValidated={true} />
-                    <FormField type="number" name="class" label="Class" value={class} error={errors.class?.message} trigger={trigger} onChange={value => setValue('class', value)} isValidated={true} />
-                    <FormField resource={trainWagonsResource} type="resourceselect" name="wagonId" mode="portal" label="Wagon" value={wagonId} error={errors.wagonId?.message} trigger={trigger} onChange={value => setValue('wagonId', value)} isValidated={true} />
-                    <FormField resource={seatTypesResource} type="resourceselect" name="typeId" mode="portal" label="Тип места: верхний/боковой/нижний" value={typeId} error={errors.typeId?.message} trigger={trigger} onChange={value => setValue('typeId', value)} isValidated={true} />
+                    <FormField type="text" name="number" label="Number" value={number} error={errors.number?.message} trigger={trigger} onChange={value => setValue('number', value)} isValidated={true} validateOnInput={false} />
+                    <FormField type="number" name="class" label="Class" value={class} error={errors.class?.message} trigger={trigger} onChange={value => setValue('class', value)} isValidated={true} validateOnInput={false} />
+                    <FormField resource={trainWagonsResource} type="resourceselect" name="wagonId" mode="portal" label="Wagon" value={wagonId} error={errors.wagonId?.message} trigger={trigger} onChange={value => setValue('wagonId', value)} isValidated={true} validateOnInput={false} />
+                    <FormField resource={seatTypesResource} type="resourceselect" name="typeId" mode="portal" label="Тип места: верхний/боковой/нижний" value={typeId} error={errors.typeId?.message} trigger={trigger} onChange={value => setValue('typeId', value)} isValidated={true} validateOnInput={false} />
                 </Fields>
             </HookForm>
         </ResourceSubmit>

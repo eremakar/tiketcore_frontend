@@ -19,6 +19,9 @@ const DataCell2 = ({ data, setData,
         const path = column.path;
         value = path ? extract(path, null, obj) : value;
         const editable = column.editable;
+        const cellIsEdit = isEdit || column.isEdit;
+
+        const getChangeMode = (fallbackMode) => column.isEdit ? 'editCommitted' : fallbackMode;
 
         const renderText = (options) => {
             const text = (value || '').toString();
@@ -36,7 +39,7 @@ const DataCell2 = ({ data, setData,
         const renderEditable = () => {
             //const isEdit = true;
 
-            if (!isEdit) {
+            if (!cellIsEdit) {
                 if (column.render) {
                     return column.render(column.type == viewTypeIds.text ? renderText(column.view) : value, wrappedRow, onChange, data);
                 }
@@ -88,7 +91,7 @@ const DataCell2 = ({ data, setData,
                         // }
                         // return toHHmmView(value);
                     case viewTypeIds.control:
-                        return column.render(value, wrappedRow, onChange, data, isEdit);
+                        return column.render(value, wrappedRow, onChange, data, cellIsEdit);
                     default:
                         return renderText(column.view);
                 }
@@ -100,7 +103,7 @@ const DataCell2 = ({ data, setData,
                 case viewTypeIds.text:
                     return <Field type={column.view?.type || 'text'} value={value} onChange={(newValue) => {
                         row[column.key] = newValue;
-                        onChange(row);
+                        onChange(row, getChangeMode());
                     }} className="tableRowField" options={column.view?.options} />
                 case viewTypeIds.json:
                     if (path) {
@@ -115,7 +118,7 @@ const DataCell2 = ({ data, setData,
                         } else {
                             row[column.key] = newValue;
                         }
-                        onChange(row);
+                        onChange(row, getChangeMode());
                     }} className="tableRowField" options={column.view?.options} />
                 case viewTypeIds.select:
                     options = column.options;
@@ -130,28 +133,28 @@ const DataCell2 = ({ data, setData,
                             row[column.key] = newValue;
                         else
                             row[column.key] = mappedObj;
-                            onChange(row);
+                            onChange(row, getChangeMode());
                     }} className="tableRowField" options={options?.items} {...options?.props} />
                 case viewTypeIds.date:
                     return <Field type='date' value={value} onChange={(newValue) => {
                         row[column.key] = newValue;
-                        onChange(row);
+                        onChange(row, getChangeMode());
                     }} className="tableRowField tableRowFieldDate" options={column.options} />
                 case viewTypeIds.time:
                     return <Field type='time' value={value} onChange={(newValue) => {
                         row[column.key] = newValue;
-                        onChange(row);
+                        onChange(row, getChangeMode());
                     }} className="tableRowField tableRowFieldDate" options={column.options} />
                 case viewTypeIds.int:
                 case viewTypeIds.bigint:
                     return <Field type='number' value={value} onChange={(newValue) => {
                         row[column.key] = newValue;
-                        onChange(row);
+                        onChange(row, getChangeMode());
                     }} className="tableRowField" options={column.view?.options} />
                 case viewTypeIds.float:
                     return <Field type='float' value={value} onChange={(newValue) => {
                         row[column.key] = newValue;
-                        onChange(row);
+                        onChange(row, getChangeMode());
                     }} className="tableRowField" options={{...column.view?.options, decimalPlaces: column.decimalPlaces}} />
                 case viewTypeIds.list:
                     options = column.options;
@@ -195,11 +198,11 @@ const DataCell2 = ({ data, setData,
                         onChange={(newItemOrList) => {
                             const next = appendOrSetList(row[column.key], newItemOrList);
                             row[column.key] = next;
-                            onChange(row, 'list');
+                            onChange(row, getChangeMode('list'));
                         }}
                     />
                 case viewTypeIds.control:
-                    return column.render(value, row, onChange, data, isEdit);
+                    return column.render(value, row, onChange, data, cellIsEdit);
             }
 
             return null;

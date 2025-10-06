@@ -3,7 +3,7 @@ import Submit2 from "./submit2";
 
 const ResourceSubmit = ({ useResource, resource, onSubmit, action, checkResponse, show, toggleClick, setShow, resourceName, size, resourceMode = 'create', resourceData, children,
     validationSchema,
-    closeTitle = "Закрыть", submitTitle = "Сохранить", formatTitle, onResourceSubmitting, onResourceSubmitted, onMap, ...props }) => {
+    closeTitle = "Закрыть", submitTitle = "Сохранить", formatTitle, onResourceSubmitting, onResourceSubmitted, onMap, closeButtonClass, submitButtonClass, ...props }) => {
     resource = useResource ? useResource() : resource;
 
     let title = "";
@@ -68,7 +68,8 @@ const ResourceSubmit = ({ useResource, resource, onSubmit, action, checkResponse
     }
 
     return <Submit2 show={show} setShow={setShow} size={size} title={title} data={resourceData} closeTitle={closeTitle} submitTitle={submitTitle}
-        onSubmit={async () => onSubmit ? await onSubmit(handleSubmit) : await handleSubmit(resourceData)} submitError={submitError} onMap={onMap} {...props}>
+        onSubmit={async () => onSubmit ? await onSubmit(handleSubmit) : await handleSubmit(resourceData)} submitError={submitError} onMap={onMap} 
+        closeButtonClass={closeButtonClass} submitButtonClass={submitButtonClass} {...props}>
         {children}
     </Submit2>
 }

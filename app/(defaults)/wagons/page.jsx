@@ -10,6 +10,8 @@ import IconRefresh from "@/components/icon/icon-refresh";
 import IconPlus from "@/components/icon/icon-plus";
 import IconMinus from "@/components/icon/icon-minus";
 import Seats from "@/app/(defaults)/seats/page";
+import WagonSubmit from "./submit";
+import WagonDetails from "./details";
 
 export default function Wagons({ defaultQuery = null, fullHeight = false, onDataChange = null, hideFilters = false, ...props }) {
     const [query, setQuery] = useState(defaultQuery || {
@@ -28,9 +30,10 @@ export default function Wagons({ defaultQuery = null, fullHeight = false, onData
 
     const [data, setData] = useState(null);
     const [row, setRow] = useState(null);
+    const [newRow, setNewRow] = useState({});
     const [expandedRows, setExpandedRows] = useState(new Set());
     const [currentExpandedWagonId, setCurrentExpandedWagonId] = useState(null);
-    const resourceActionPostfix = "вагон (тип)";
+    const resourceActionPostfix = "модель вагона";
 
     const wagonTypesResource = useResource('wagonTypes');
     const wagonsResource = useResource('wagonModels');
@@ -131,7 +134,7 @@ export default function Wagons({ defaultQuery = null, fullHeight = false, onData
                 setQuery={setQuery}
                 filterMode={hideFilters ? "none" : "default"}
                 sortMode={hideFilters ? "none" : "default"}
-                leftActions={true}
+                leftActions={false}
                 enableCellEditOnDoubleClick={false}
                 fullHeight={fullHeight}
                 renderExpandedRow={(wrappedRow) => {
@@ -149,6 +152,17 @@ export default function Wagons({ defaultQuery = null, fullHeight = false, onData
                     // Notify parent component about data changes only when saving
                     if (e.type === dataTableEventTypeIds.commitRow && onDataChange) {
                         onDataChange();
+                    }
+                }}
+                actions={{
+                    onCreate: () => setCreateShow(true),
+                    onEdit: (wrappedRow) => {
+                        setRow({ ...wrappedRow.row });
+                        setEditShow(true);
+                    },
+                    onDetails: (wrappedRow) => {
+                        setRow({ ...wrappedRow.row });
+                        setDetailsShow(true);
                     }
                 }}
                 columns={[
@@ -180,13 +194,13 @@ export default function Wagons({ defaultQuery = null, fullHeight = false, onData
                         editable: true,
                         type: viewTypeIds.int
                     },
-                    {
-                        key: 'pictureS3',
-                        title: 'PictureS3',
-                        isSortable: true,
-                        editable: false,
-                        type: viewTypeIds.text
-                    },
+                    // {
+                    //     key: 'pictureS3',
+                    //     title: 'PictureS3',
+                    //     isSortable: true,
+                    //     editable: false,
+                    //     type: viewTypeIds.text
+                    // },
                     // {
                     //     key: 'class',
                     //     title: 'Class',
@@ -262,6 +276,15 @@ export default function Wagons({ defaultQuery = null, fullHeight = false, onData
                 ]}
                 {...props}
             />
+            <WagonSubmit resource={wagonsResource} show={createShow} setShow={setCreateShow} resourceName={resourceActionPostfix} resourceMode="create" resourceData={newRow} onResourceSubmitted={async () => {
+                fetch();
+                if (onDataChange) onDataChange();
+            }} orientation="horizontal" type="expandable"/>
+            <WagonSubmit resource={wagonsResource} show={editShow} setShow={setEditShow} resourceName={resourceActionPostfix} resourceMode="edit" resourceData={row} onResourceSubmitted={async () => {
+                fetch();
+                if (onDataChange) onDataChange();
+            }} orientation="horizontal" type="expandable"/>
+            <WagonDetails resource={wagonsResource} show={detailsShow} setShow={setDetailsShow} resourceName={resourceActionPostfix} resourceData={row} orientation="horizontal" type="expandable"/>
         </>
     )
 }

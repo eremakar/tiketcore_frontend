@@ -26,9 +26,9 @@ export default function RouteSubmit({show, setShow, resourceName, resource, reso
     const trainsResource = useResource('trains');
     return (
         <ResourceSubmit resource={resource} show={show} setShow={setShow} resourceName={resourceName} resourceMode={resourceMode} resourceData={resourceData} onResourceSubmitted={onResourceSubmitted} onSubmit={async handler => { handleSubmit(handler)(); }}>
-            <HookForm methods={methods} data={resourceData}>
+            <HookForm methods={methods} data={resourceData} validateOnInput={false}>
                 <Fields>
-                    <FormField resource={trainsResource} type="resourceselect" name="trainId" mode="portal" label="Номер поезда" value={trainId} error={errors.trainId?.message} trigger={trigger} onChange={value => setValue('trainId', value)} isValidated={true} />
+                    <FormField resource={trainsResource} type="resourceselect" name="trainId" mode="portal" label="Номер поезда" value={trainId} error={errors.trainId?.message} trigger={trigger} onChange={value => setValue('trainId', value)} isValidated={true} validateOnInput={false} />
                 </Fields>
             </HookForm>
         </ResourceSubmit>
