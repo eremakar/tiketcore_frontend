@@ -1,15 +1,6 @@
-import IconMenuDashboard from '@/components/icon/menu/icon-menu-dashboard';
 import IconCaretDown from '@/components/icon/icon-caret-down';
-import IconMenuApps from '@/components/icon/menu/icon-menu-apps';
-import IconMenuComponents from '@/components/icon/menu/icon-menu-components';
-import IconMenuElements from '@/components/icon/menu/icon-menu-elements';
-import IconMenuDatatables from '@/components/icon/menu/icon-menu-datatables';
-import IconMenuForms from '@/components/icon/menu/icon-menu-forms';
-import IconMenuPages from '@/components/icon/menu/icon-menu-pages';
-import IconMenuMore from '@/components/icon/menu/icon-menu-more';
 import Link from 'next/link';
 import { getTranslation } from '@/i18n';
-import IconX from '../icon/icon-x';
 import useUser from '@/hooks/useUser';
 import { useRouter } from 'next/navigation';
 
@@ -23,7 +14,6 @@ const HorizontalMenu = () => {
             <li className="menu nav-item relative">
                 <button type="button" className="nav-link">
                     <div className="flex items-center">
-                        <IconMenuDashboard className="shrink-0" />
                         <Link href="/">Главная</Link>
                     </div>
                 </button>
@@ -32,7 +22,6 @@ const HorizontalMenu = () => {
             <li className="menu nav-item relative">
                 <button type="button" className="nav-link">
                     <div className="flex items-center">
-                        <IconMenuDashboard className="shrink-0" />
                         <Link href="/trainWagonsPlans">Состав вагонов</Link>
                     </div>
                 </button>
@@ -41,7 +30,6 @@ const HorizontalMenu = () => {
             <li className="menu nav-item relative">
                 <button type="button" className="nav-link">
                     <div className="flex items-center">
-                        <IconMenuDashboard className="shrink-0" />
                         <Link href="/trainSchedules">Расписание поездов</Link>
                     </div>
                 </button>
@@ -50,7 +38,6 @@ const HorizontalMenu = () => {
             <li className="menu nav-item relative">
                 <button type="button" className="nav-link">
                     <div className="flex items-center">
-                        <IconMenuApps className="shrink-0" />
                         <span className="px-1">Маршруты</span>
                     </div>
                     <div className="right_arrow">
@@ -70,7 +57,6 @@ const HorizontalMenu = () => {
             <li className="menu nav-item relative">
                 <button type="button" className="nav-link">
                     <div className="flex items-center">
-                        <IconMenuApps className="shrink-0" />
                         <span className="px-1">Тарификатор</span>
                     </div>
                     <div className="right_arrow">
@@ -121,7 +107,6 @@ const HorizontalMenu = () => {
             <li className="menu nav-item relative">
                 <button type="button" className="nav-link">
                     <div className="flex items-center">
-                        <IconMenuApps className="shrink-0" />
                         <span className="px-1">Бронирование билетов</span>
                     </div>
                     <div className="right_arrow">
@@ -146,7 +131,6 @@ const HorizontalMenu = () => {
             <li className="menu nav-item relative">
                 <button type="button" className="nav-link">
                     <div className="flex items-center">
-                        <IconMenuDashboard className="shrink-0" />
                         <Link href="/tickets">Билеты</Link>
                     </div>
                 </button>
@@ -154,7 +138,6 @@ const HorizontalMenu = () => {
             <li className="menu nav-item relative">
                 <button type="button" className="nav-link">
                     <div className="flex items-center">
-                        <IconMenuApps className="shrink-0" />
                         <span className="px-1">Справочники</span>
                     </div>
                     <div className="right_arrow">
@@ -174,45 +157,27 @@ const HorizontalMenu = () => {
                     <li>
                         <Link href="/seatTypes">Типы мест</Link>
                     </li>
-                    <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <IconMenuDashboard className="shrink-0" />
-                                <Link href="/connections">Соединение 2х станций</Link>
-                            </div>
-                        </button>
-                    </li>
+                    
                     <li>
                         <Link href="/stations">Станции</Link>
                     </li>
                     <li>
                         <Link href="/trains">Поезда</Link>
                     </li>
-                    <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <IconMenuDashboard className="shrink-0" />
-                                <Link href="/trainWagons">Вагоны состава поезда</Link>
-                            </div>
-                        </button>
+                    <li>
+                        <Link href="/trainWagons">Вагоны состава поезда</Link>
                     </li>
                     <li>
                         <Link href="/wagons">Вагоны</Link>
                     </li>
-                    <li className="menu nav-item relative">
-                        <button type="button" className="nav-link">
-                            <div className="flex items-center">
-                                <IconMenuDashboard className="shrink-0" />
-                                <Link href="/seats">Места в вагоне</Link>
-                            </div>
-                        </button>
+                    <li>
+                        <Link href="/seats">Места в вагоне</Link>
                     </li>
                 </ul>
             </li>
             <li className="menu nav-item relative">
                 <button type="button" className="nav-link">
                     <div className="flex items-center">
-                        <IconMenuApps className="shrink-0" />
                         <span className="px-1">Администрирование</span>
                     </div>
                     <div className="right_arrow">
@@ -231,7 +196,6 @@ const HorizontalMenu = () => {
                     router.replace('/auth/cover-login');
                 }}>
                     <div className="flex items-center">
-                        <IconX className="shrink-0" />
                         <span className="px-1">Выход</span>
                     </div>
                 </button>
