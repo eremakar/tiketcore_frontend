@@ -86,7 +86,7 @@ const List = ({data, setData, query, setQuery, defaultQuery, onQuery, onMap, col
                             <td>
                                 <div className="flex gap-2">
                                     <Tippy content="Обновить">
-                                        <button type="button" class="btn btn-primary" onClick={async () => await fetch()}>
+                                        <button type="button" class="btn btn-sm btn-primary" onClick={async () => await fetch()}>
                                             <IconRefresh />
                                         </button>
                                     </Tippy>

@@ -111,7 +111,7 @@ const Sort = ({query, setQuery, schema, rows, mode, part, show, setShow, default
                             </div>
                         </div>
                     </div>} placement="right">
-                    <button type="button" class="btn btn-primary" onClick={() => setDetailsShow(!detailsShow)}>
+                    <button type="button" class="btn btn-sm btn-primary" onClick={() => setDetailsShow(!detailsShow)}>
                         <IconStar />
                     </button>
                 </Tippy>
@@ -119,7 +119,7 @@ const Sort = ({query, setQuery, schema, rows, mode, part, show, setShow, default
         default:
             switch (part) {
                 case 1:
-                    return <Tippy content="Сортировка"><button type="button" class="btn btn-primary" onClick={() => setShow(!show)}>
+                    return <Tippy content="Сортировка"><button type="button" class="btn btn-sm btn-primary" onClick={() => setShow(!show)}>
                         <IconStar />
                     </button></Tippy>
                 case 2:
