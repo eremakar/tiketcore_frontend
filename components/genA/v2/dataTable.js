@@ -304,11 +304,10 @@ const DataTable2Inner = ({
 
   const renderActions = (row) => {
     return (
-      <div className="btn-list" style={{marginLeft: '20px'}}>
+      <div style={{display: 'flex', gap: '2px'}}>
         {onEdit && (
           <button
             className="btn btn-sm btn-xsm prevent"
-            style={{marginRight:'2px'}}
             onClick={async (e) => {
               e.stopPropagation();
               await onEdit(row);
@@ -320,7 +319,6 @@ const DataTable2Inner = ({
         {onDelete && (
           <button
             className="btn btn-sm btn-xsm prevent"
-            style={{marginRight:'2px'}}
             onClick={async (e) => {
               e.stopPropagation();
               await onDelete(row);
@@ -332,7 +330,6 @@ const DataTable2Inner = ({
         {onDetails && (
           <button
             className="btn btn-sm btn-xsm prevent"
-            style={{marginRight:'2px'}}
             onClick={async (e) => {
               e.stopPropagation();
               await onDetails(row);

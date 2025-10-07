@@ -24,6 +24,8 @@ export default function WagonSubmit({show, setShow, resourceName, resource, reso
         seatCount: yup.string().required("Поле обязательное*"),
         //pictureS3: yup.string().required("Поле обязательное*"),
         classId: yup.string().required("Поле обязательное*"),
+        hasLiftingMechanism: yup.boolean(),
+        manufacturerName: yup.string(),
     }));
     const methods = useForm({
         resolver: resolver,
@@ -42,6 +44,8 @@ export default function WagonSubmit({show, setShow, resourceName, resource, reso
     const seatCount = watch('seatCount');
     const pictureS3 = watch('pictureS3');
     const classId = watch('classId');
+    const hasLiftingMechanism = watch('hasLiftingMechanism');
+    const manufacturerName = watch('manufacturerName');
 
     // Load wagon features
     useEffect(() => {
@@ -110,44 +114,51 @@ export default function WagonSubmit({show, setShow, resourceName, resource, reso
     return (
         <ResourceSubmit resource={resource} show={show} setShow={setShow} resourceName={resourceName} resourceMode={resourceMode} resourceData={resourceData} onResourceSubmitted={onResourceSubmitted} onSubmit={async handler => { handleSubmit(handler)(); }} submitTitle="Создать" submitButtonClass="btn btn-success">
             <HookForm methods={methods} data={resourceData} validateOnInput={false}>
-                <Fields>
-                    <FormField type="text" name="name" label="Наименование" value={name} error={errors.name?.message} trigger={trigger} onChange={value => setValue('name', value)} isValidated={true} validateOnInput={false} />
-                    <FormField resource={wagonTypesResource} type="resourceselect" name="typeId" mode="portal" label="Тип" value={typeId} error={errors.typeId?.message} trigger={trigger} onChange={value => setValue('typeId', value)} isValidated={true} validateOnInput={false} />
-                    <FormField resource={wagonClassesResource} type="resourceselect" name="classId" mode="portal" label="Класс" value={classId} error={errors.classId?.message} trigger={trigger} onChange={value => setValue('classId', value)} isValidated={true} validateOnInput={false} />
-                    <FormField type="multicheckbox" name="features" label="Особенности" value={features} error={errors.features?.message} trigger={trigger} onChange={value => {
-                        console.log(value);
-                        setFeatures(value);
-                        debugger;
-                        const existingFeatures = resourceData?.features || [];
-                        const formattedFeatures = value.map(id => {
-                            const existingFeature = existingFeatures.find(f => f.featureId === id);
-                            return existingFeature ? { ...existingFeature, featureId: id } : { featureId: id };
-                        });
-                        setValue('features', formattedFeatures);
-                    }} options={{ items: wagonFeatures.map(feature => ({ value: feature.id, label: feature.name })), columns: 2 }} isValidated={true} validateOnInput={false} />                   
-                    <FormField
-                        type="number" 
-                        name="seatCount" 
-                        label="Количество мест" 
-                        value={seatCount} 
-                        error={errors.seatCount?.message} 
-                        trigger={trigger} 
-                        onChange={value => setValue('seatCount', value)} 
-                        isValidated={true}
-                        validateOnInput={false}
-                        addon={
-                            <button 
-                                type="button" 
-                                className="btn btn-primary"
-                                onClick={handleCreateSeats}
-                                disabled={!seatCount || parseInt(seatCount) <= 0}
-                            >
-                                Создать
-                            </button>
-                        }
-                    />
-                    {showSeats && (
-                        <div className="mt-4">
+                <div className="space-y-5">
+                    <Fields cols={2} title="Основная">
+                        <FormField type="text" name="name" label="Наименование" value={name} error={errors.name?.message} trigger={trigger} onChange={value => setValue('name', value)} isValidated={true} validateOnInput={false} />
+                        <FormField resource={wagonTypesResource} type="resourceselect" name="typeId" mode="portal" label="Тип" value={typeId} error={errors.typeId?.message} trigger={trigger} onChange={value => setValue('typeId', value)} isValidated={true} validateOnInput={false} />
+                        <FormField resource={wagonClassesResource} type="resourceselect" name="classId" mode="portal" label="Класс" value={classId} error={errors.classId?.message} trigger={trigger} onChange={value => setValue('classId', value)} isValidated={true} validateOnInput={false} />
+                        <FormField type="checkbox" name="hasLiftingMechanism" label="Наличие подъемного механизма" value={hasLiftingMechanism} error={errors.hasLiftingMechanism?.message} trigger={trigger} onChange={value => setValue('hasLiftingMechanism', value)} isValidated={false} validateOnInput={false} />
+                        <FormField type="text" name="manufacturerName" label="Завод изготовитель" value={manufacturerName} error={errors.manufacturerName?.message} trigger={trigger} onChange={value => setValue('manufacturerName', value)} isValidated={false} validateOnInput={false} />
+                    </Fields>
+                    
+                    <Fields cols={1} title="Особенности">
+                        <FormField type="multicheckbox" orientation="vertical" name="features" value={features} error={errors.features?.message} trigger={trigger} onChange={value => {
+                            console.log(value);
+                            setFeatures(value);
+                            const existingFeatures = resourceData?.features || [];
+                            const formattedFeatures = value.map(id => {
+                                const existingFeature = existingFeatures.find(f => f.featureId === id);
+                                return existingFeature ? { ...existingFeature, featureId: id } : { featureId: id };
+                            });
+                            setValue('features', formattedFeatures);
+                        }} options={{ items: wagonFeatures.map(feature => ({ value: feature.id, label: feature.name })), columns: 2 }} isValidated={true} validateOnInput={false} />
+                    </Fields>
+                    
+                    <Fields cols={1} title="Количество мест">
+                        <FormField
+                            orientation="vertical"
+                            type="number" 
+                            name="seatCount"
+                            value={seatCount} 
+                            error={errors.seatCount?.message} 
+                            trigger={trigger} 
+                            onChange={value => setValue('seatCount', value)} 
+                            isValidated={true}
+                            validateOnInput={false}
+                            addon={
+                                <button 
+                                    type="button" 
+                                    className="btn btn-primary"
+                                    onClick={handleCreateSeats}
+                                    disabled={!seatCount || parseInt(seatCount) <= 0}
+                                >
+                                    Создать
+                                </button>
+                            }
+                        />
+                        {showSeats && (
                             <SeatsTable 
                                 seats={seats}
                                 setSeats={setSeats}
@@ -157,10 +168,10 @@ export default function WagonSubmit({show, setShow, resourceName, resource, reso
                                     setValue('seats', updatedSeats);
                                 }}
                             />
-                        </div>
-                    )}
+                        )}
+                    </Fields>
                     {/* <FormField type="text" name="pictureS3.id" label="фото" />  */}
-                </Fields>
+                </div>
             </HookForm>
         </ResourceSubmit>
     )
