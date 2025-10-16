@@ -105,7 +105,7 @@ const Filter = ({query, setQuery, schema, rows, mode, part, show, setShow, onCha
         default:
             switch (part) {
                 case 1:
-                    return <Tippy content="Фильтр"><button type="button" className="btn btn-neo btn-icon" onClick={() => setShow(!show)}>
+                    return <Tippy content="Фильтр"><button type="button" className="btn btn-sm btn-neo btn-icon" onClick={() => setShow(!show)}>
                         <IconSearch />
                     </button></Tippy>
                 case 2:

@@ -57,7 +57,7 @@ const List2Panel = ({ query, setQuery, columns,
             <td>
                 <div className="flex gap-3">
                     {isFetch && <Tippy content="Обновить">
-                        <button type="button" className="btn btn-neo btn-icon" onClick={async () => await fetch()}>
+                        <button type="button" className="btn btn-sm btn-neo btn-icon" onClick={async () => await fetch()}>
                             <IconRefresh />
                         </button>
                     </Tippy>}
