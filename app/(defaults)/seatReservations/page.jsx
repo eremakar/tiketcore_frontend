@@ -1,14 +1,17 @@
 ﻿'use client';
 
-import ResourceTable from "@/components/genA/resourceTable";
+import ResourceTable2 from "@/components/genA/v2/resourceTable";
 import useResource from "@/hooks/useResource";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { formatDateTime } from "@/components/genA/functions/datetime";
 import RouteStationLookup from "@/app/(defaults)/routeStations/lookup";
 import TrainLookup from "@/app/(defaults)/trains/lookup";
 import TrainWagonLookup from "@/app/(defaults)/trainWagons/lookup";
 import SeatLookup from "@/app/(defaults)/seats/lookup";
 import TrainScheduleLookup from "@/app/(defaults)/trainSchedules/lookup";
+import { viewTypeIds } from "@/components/genA/v2/viewTypeIds";
+import SeatReservationSubmit from "./submit";
+import SeatReservationDetails from "./details";
 
 export default function SeatReservations() {
     const [query, setQuery] = useState({
@@ -25,41 +28,151 @@ export default function SeatReservations() {
     const [editShow, setEditShow] = useState(false);
     const [detailsShow, setDetailsShow] = useState(false);
 
+    const [data, setData] = useState(null);
     const [row, setRow] = useState(null);
+    const [newRow, setNewRow] = useState({});
     const resourceActionPostfix = "бронирование места";
 
-    const fetch = () => {
-        setQuery({...query});
-    }
+    const [routeStations, setRouteStations] = useState([]);
+    const [trains, setTrains] = useState([]);
+    const [trainWagons, setTrainWagons] = useState([]);
+    const [seats, setSeats] = useState([]);
+    const [trainSchedules, setTrainSchedules] = useState([]);
 
-    const resource = useResource('seatReservations');
+    const seatReservationsResource = useResource('seatReservations');
     const routeStationsResource = useResource('routeStations');
     const trainsResource = useResource('trains');
     const trainWagonsResource = useResource('trainWagons');
     const seatsResource = useResource('seats');
     const trainSchedulesResource = useResource('trainSchedules');
+
+    useEffect(() => {
+        const loadRefs = async () => {
+            try {
+                const [rsRes, trRes, twRes, sRes, tsRes] = await Promise.all([
+                    routeStationsResource.search({ paging: { skip: 0 } }),
+                    trainsResource.search({ paging: { skip: 0 } }),
+                    trainWagonsResource.search({ paging: { skip: 0 } }),
+                    seatsResource.search({ paging: { skip: 0 } }),
+                    trainSchedulesResource.search({ paging: { skip: 0 } })
+                ]);
+                setRouteStations(rsRes?.result || []);
+                setTrains(trRes?.result || []);
+                setTrainWagons(twRes?.result || []);
+                setSeats(sRes?.result || []);
+                setTrainSchedules(tsRes?.result || []);
+            } catch (e) {
+                console.error(e);
+            }
+        };
+        loadRefs();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
+
+    const fetch = () => {
+        setQuery({ ...query });
+    }
+
     return (
         <>
-            <ResourceTable
-                resource={resource}
+            <ResourceTable2
+                data={data}
+                setData={setData}
+                useResource={() => useResource('seatReservations')}
                 resourceName={resourceActionPostfix}
                 query={query}
                 setQuery={setQuery}
                 filterMode="default"
                 sortMode="default"
-                hideDelete={false}
+                leftActions={false}
+                enableCellEditOnDoubleClick={false}
+                actions={{
+                    onCreate: () => setCreateShow(true),
+                    onEdit: (wrappedRow) => {
+                        setRow({ ...wrappedRow.row });
+                        setEditShow(true);
+                    },
+                    onDetails: (wrappedRow) => {
+                        setRow({ ...wrappedRow.row });
+                        setDetailsShow(true);
+                    }
+                }}
                 columns={[
-                    { key: 'id', title: 'Ид', isSortable: true },
-                    { key: 'number', title: 'Number', isSortable: true },
-                    { key: 'date', title: 'Date', isSortable: true, render: (value) => formatDateTime(value) },
-                    { key: 'price', title: 'Price', isSortable: true },
-                    { key: 'total', title: 'Total', isSortable: true },
-                    { key: 'from', title: 'From', isSortable: true, render: (value) => value?.name },
-                    { key: 'to', title: 'To', isSortable: true, render: (value) => value?.name },
-                    { key: 'train', title: 'Train', isSortable: true, render: (value) => value?.name },
-                    { key: 'wagon', title: 'Wagon', isSortable: true, render: (value) => value?.name },
-                    { key: 'seat', title: 'Seat', isSortable: true, render: (value) => value?.name },
-                    { key: 'trainSchedule', title: 'TrainSchedule', isSortable: true, render: (value) => value?.name },
+                    { key: 'id', title: 'Ид', isSortable: true, style: { width: '60px' } },
+                    { key: 'number', title: 'Номер', isSortable: true, editable: true, type: viewTypeIds.text },
+                    {
+                        key: 'train',
+                        title: 'Поезд',
+                        isSortable: true,
+                        editable: true,
+                        type: viewTypeIds.select,
+                        options: {
+                            items: trains,
+                            relationMemberName: 'trainId',
+                            primitive: false,
+                            props: { mode: 'portal', labelMemberName: 'name', valueMemberName: 'id', isNullable: true, isNullLabel: 'Не указано' }
+                        },
+                        render: (value) => value?.name
+                    },
+                    { key: 'date', title: 'Дата', isSortable: true, editable: true, type: viewTypeIds.dateTime, render: (value) => formatDateTime(value) },
+                    {
+                        key: 'from',
+                        title: 'Откуда',
+                        isSortable: true,
+                        editable: true,
+                        type: viewTypeIds.select,
+                        options: {
+                            items: routeStations,
+                            relationMemberName: 'fromId',
+                            primitive: false,
+                            props: { mode: 'portal', labelMemberName: 'name', valueMemberName: 'id', isNullable: true, isNullLabel: 'Не указано' }
+                        },
+                        render: (value) => value?.station?.name
+                    },
+                    {
+                        key: 'to',
+                        title: 'Куда',
+                        isSortable: true,
+                        editable: true,
+                        type: viewTypeIds.select,
+                        options: {
+                            items: routeStations,
+                            relationMemberName: 'toId',
+                            primitive: false,
+                            props: { mode: 'portal', labelMemberName: 'name', valueMemberName: 'id', isNullable: true, isNullLabel: 'Не указано' }
+                        },
+                        render: (value) => value?.station?.name
+                    },
+                    { key: 'price', title: 'Цена', isSortable: true, editable: true, type: viewTypeIds.float },
+                    { key: 'total', title: 'Итого', isSortable: true, editable: true, type: viewTypeIds.float },
+                    {
+                        key: 'wagon',
+                        title: 'Вагон',
+                        isSortable: true,
+                        editable: true,
+                        type: viewTypeIds.select,
+                        options: {
+                            items: trainWagons,
+                            relationMemberName: 'wagonId',
+                            primitive: false,
+                            props: { mode: 'portal', labelMemberName: 'name', valueMemberName: 'id', isNullable: true, isNullLabel: 'Не указано' }
+                        },
+                        render: (value) => value?.number
+                    },
+                    {
+                        key: 'seat',
+                        title: 'Место',
+                        isSortable: true,
+                        editable: true,
+                        type: viewTypeIds.select,
+                        options: {
+                            items: seats,
+                            relationMemberName: 'seatId',
+                            primitive: false,
+                            props: { mode: 'portal', labelMemberName: 'name', valueMemberName: 'id', isNullable: true, isNullLabel: 'Не указано' }
+                        },
+                        render: (value) => value?.number
+                    },
                 ]}
                 filters={[
                     {
@@ -67,56 +180,91 @@ export default function SeatReservations() {
                         key: 'id',
                     },
                     {
-                        title: 'Number',
+                        title: 'Номер',
                         key: 'number',
                         operator: 'like',
                     },
                     {
-                        title: 'Date',
+                        title: 'Дата',
                         key: 'date',
                         type: 'datetime',
                     },
                     {
-                        title: 'Price',
+                        title: 'Цена',
                         key: 'price',
                         type: 'number',
                     },
                     {
-                        title: 'Total',
+                        title: 'Итого',
                         key: 'total',
                         operator: 'like',
                     },
                     {
-                        title: 'FromId',
+                        title: 'Откуда',
                         key: 'fromId',
                         renderField: (fieldProps) => <RouteStationLookup resource={routeStationsResource} {...fieldProps} />,
                     },
                     {
-                        title: 'ToId',
+                        title: 'Куда',
                         key: 'toId',
                         renderField: (fieldProps) => <RouteStationLookup resource={routeStationsResource} {...fieldProps} />,
                     },
                     {
-                        title: 'TrainId',
+                        title: 'Поезд',
                         key: 'trainId',
                         renderField: (fieldProps) => <TrainLookup resource={trainsResource} {...fieldProps} />,
                     },
                     {
-                        title: 'WagonId',
+                        title: 'Вагон',
                         key: 'wagonId',
                         renderField: (fieldProps) => <TrainWagonLookup resource={trainWagonsResource} {...fieldProps} />,
                     },
                     {
-                        title: 'SeatId',
+                        title: 'Место',
                         key: 'seatId',
                         renderField: (fieldProps) => <SeatLookup resource={seatsResource} {...fieldProps} />,
                     },
                     {
-                        title: 'TrainScheduleId',
+                        title: 'Расписание',
                         key: 'trainScheduleId',
                         renderField: (fieldProps) => <TrainScheduleLookup resource={trainSchedulesResource} {...fieldProps} />,
                     },
                 ]}
+            />
+            <SeatReservationSubmit 
+                resource={seatReservationsResource} 
+                show={createShow} 
+                setShow={setCreateShow} 
+                resourceName={resourceActionPostfix} 
+                resourceMode="create" 
+                resourceData={newRow} 
+                onResourceSubmitted={async () => {
+                    fetch();
+                }} 
+                orientation="horizontal" 
+                type="expandable"
+            />
+            <SeatReservationSubmit 
+                resource={seatReservationsResource} 
+                show={editShow} 
+                setShow={setEditShow} 
+                resourceName={resourceActionPostfix} 
+                resourceMode="edit" 
+                resourceData={row} 
+                onResourceSubmitted={async () => {
+                    fetch();
+                }} 
+                orientation="horizontal" 
+                type="expandable"
+            />
+            <SeatReservationDetails 
+                resource={seatReservationsResource} 
+                show={detailsShow} 
+                setShow={setDetailsShow} 
+                resourceName={resourceActionPostfix} 
+                resourceData={row} 
+                orientation="horizontal" 
+                type="expandable"
             />
         </>
     )

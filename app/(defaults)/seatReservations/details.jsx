@@ -6,16 +6,24 @@ import { formatDateTime } from "@/components/genA/functions/datetime";
 export default function SeatReservationDetails({show, setShow, resourceName, resource, resourceData, orientation, type}) {
     return (
         <ResourceDetails resource={resource} show={show} setShow={setShow} resourceName={resourceName} resourceData={resourceData}>
-            <FormField type="label" label="Number" value={resourceData?.number}/>
-            <FormField type="label" label="Date" value={formatDateTime(resourceData?.date)}/>
-            <FormField type="label" label="Price" value={resourceData?.price}/>
-            <FormField type="label" label="Total" value={resourceData?.total}/>
-            <FormField type="label" label="From" value={resourceData?.from?.name}/>
-            <FormField type="label" label="To" value={resourceData?.to?.name}/>
-            <FormField type="label" label="Train" value={resourceData?.train?.name}/>
-            <FormField type="label" label="Wagon" value={resourceData?.wagon?.name}/>
-            <FormField type="label" label="Seat" value={resourceData?.seat?.name}/>
-            <FormField type="label" label="TrainSchedule" value={resourceData?.trainSchedule?.name}/>
+            <Fields cols={2} title="Информация о бронировании">
+                <FormField type="label" label="Номер брони" value={resourceData?.number}/>
+                <FormField type="label" label="Дата" value={formatDateTime(resourceData?.date)}/>
+                <FormField type="label" label="Цена" value={resourceData?.price}/>
+                <FormField type="label" label="Итого" value={resourceData?.total}/>
+            </Fields>
+            <Fields cols={2} title="Маршрут">
+                <FormField type="label" label="Откуда" value={resourceData?.from?.name}/>
+                <FormField type="label" label="Куда" value={resourceData?.to?.name}/>
+            </Fields>
+            <Fields cols={3} title="Детали поездки">
+                <FormField type="label" label="Поезд" value={resourceData?.train?.name}/>
+                <FormField type="label" label="Вагон" value={resourceData?.wagon?.name}/>
+                <FormField type="label" label="Место" value={resourceData?.seat?.name}/>
+            </Fields>
+            <Fields cols={1} title="Расписание">
+                <FormField type="label" label="Расписание поезда" value={resourceData?.trainSchedule?.name}/>
+            </Fields>
         </ResourceDetails>
     )
 }

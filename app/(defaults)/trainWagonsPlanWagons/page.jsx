@@ -34,6 +34,13 @@ export default function TrainWagonsPlanWagons({ defaultQuery, fullHeight, onData
     const wagonsResource = useResource('wagonModels');
     const [wagons, setWagons] = useState([]);
 
+    // Sync query with defaultQuery when it changes
+    useEffect(() => {
+        if (defaultQuery) {
+            setQuery(defaultQuery);
+        }
+    }, [defaultQuery]);
+
     // Load wagons for dropdown
     useEffect(() => {
         const loadWagons = async () => {

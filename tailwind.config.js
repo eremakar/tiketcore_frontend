@@ -9,6 +9,18 @@ const rotateX = plugin(function ({ addUtilities }) {
 });
 module.exports = {
     content: ['./App.tsx', './app/**/*.{js,ts,jsx,tsx}', './pages/**/*.{js,ts,jsx,tsx}', './components/**/*.{js,ts,jsx,tsx}', './src/**/*.{js,ts,jsx,tsx}'],
+    safelist: [
+        'max-w-sm',
+        'max-w-md',
+        'max-w-lg',
+        'max-w-xl',
+        'max-w-2xl',
+        'max-w-3xl',
+        'max-w-4xl',
+        'max-w-5xl',
+        'max-w-6xl',
+        'max-w-7xl',
+    ],
     darkMode: 'class',
     theme: {
         container: {
