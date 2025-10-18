@@ -7,7 +7,7 @@ import { viewTypeIds } from "@/components/genA/v2/viewTypeIds";
 
 export default function BaseFares() {
     const [query, setQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {

@@ -11,7 +11,7 @@ import TrainScheduleLookup from "@/app/(defaults)/trainSchedules/lookup";
 
 export default function SeatCountReservations() {
     const [query, setQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {

@@ -7,7 +7,7 @@ import StationLookup from "@/app/(defaults)/stations/lookup";
 
 export default function Depots() {
     const [query, setQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 1000 },
         filter: {},
         sort: {
             id: {

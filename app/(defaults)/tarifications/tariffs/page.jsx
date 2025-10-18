@@ -13,7 +13,7 @@ import TariffWagonItems from "@/app/(defaults)/tarifications/tariffWagonItems/pa
 
 export default function Tariffs() {
     const [query, setQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {
@@ -73,12 +73,12 @@ export default function Tariffs() {
                 wagonsResponse,
                 tariffWagonItemsResponse
             ] = await Promise.all([
-                baseFaresResource.search({ paging: { skip: 0, take: 1000 } }),
-                trainCategoriesResource.search({ paging: { skip: 0, take: 1000 } }),
-                tariffsResource.search({ paging: { skip: 0, take: 1000 } }),
-                wagonTypesResource.search({ paging: { skip: 0, take: 1000 } }),
-                wagonsResource.search({ paging: { skip: 0, take: 1000 } }),
-                tariffWagonItemsResource.search({ paging: { skip: 0, take: 1000 } }),
+                baseFaresResource.search({ paging: { skip: 0, take: 10000 } }),
+                trainCategoriesResource.search({ paging: { skip: 0, take: 10000 } }),
+                tariffsResource.search({ paging: { skip: 0, take: 10000 } }),
+                wagonTypesResource.search({ paging: { skip: 0, take: 10000 } }),
+                wagonsResource.search({ paging: { skip: 0, take: 10000 } }),
+                tariffWagonItemsResource.search({ paging: { skip: 0, take: 10000 } }),
             ]);
             setBaseFares(baseFaresResponse?.result || []);
             setTrainCategories(trainCategoriesResponse?.result || []);
@@ -93,7 +93,7 @@ export default function Tariffs() {
     const refreshTariffWagonItems = async () => {
         if (!selectedTariffId) return;
         const response = await tariffWagonItemsResource.search({ 
-            paging: { skip: 0, take: 1000 },
+            paging: { skip: 0, take: 10000 },
             filter: { tariffId: { operand1: selectedTariffId, operator: 'equals' } }
         });
         const filtered = response?.result || [];
@@ -103,17 +103,17 @@ export default function Tariffs() {
     const openSettingsDrawer = async (tariffId) => {
         setSelectedTariffId(tariffId);
         setTariffTrainCategoryItemsQuery({
-            paging: { skip: 0, take: 10 },
+            paging: { skip: 0, take: 100 },
             filter: { tariffId: { operand1: tariffId, operator: 'equals' } },
             sort: { id: { operator: 'desc' } }
         });
         setTariffWagonTypeItemsQuery({
-            paging: { skip: 0, take: 10 },
+            paging: { skip: 0, take: 100 },
             filter: { tariffId: { operand1: tariffId, operator: 'equals' } },
             sort: { id: { operator: 'desc' } }
         });
         setTariffWagonItemsQuery({
-            paging: { skip: 0, take: 10 },
+            paging: { skip: 0, take: 100 },
             filter: { tariffId: { operand1: tariffId, operator: 'equals' } },
             sort: { id: { operator: 'desc' } }
         });
@@ -250,6 +250,7 @@ export default function Tariffs() {
                                     <h4 className="text-md font-semibold mb-3">Параметры категорий поездов</h4>
                                     {tariffTrainCategoryItemsQuery?.filter?.tariffId && trainCategoryItemsDefaultData && (
                                         <TariffTrainCategoryItems 
+                                            key={`train-category-${selectedTariffId}`}
                                             defaultQuery={tariffTrainCategoryItemsQuery}
                                             hideFilters={true}
                                             defaultData={trainCategoryItemsDefaultData}
@@ -262,6 +263,7 @@ export default function Tariffs() {
                                     <h4 className="text-md font-semibold mb-3">Параметры типов вагонов</h4>
                                     {tariffWagonTypeItemsQuery?.filter?.tariffId && wagonTypeItemsDefaultData && (
                                         <TariffWagonTypeItems 
+                                            key={`wagon-type-${selectedTariffId}`}
                                             defaultQuery={tariffWagonTypeItemsQuery}
                                             hideFilters={true}
                                             defaultData={wagonTypeItemsDefaultData}
@@ -274,6 +276,7 @@ export default function Tariffs() {
                                     <h4 className="text-md font-semibold mb-3">Параметры вагонов</h4>
                                     {tariffWagonItemsQuery?.filter?.tariffId && wagonItemsDefaultData && (
                                         <TariffWagonItems 
+                                            key={`wagon-items-${selectedTariffId}`}
                                             defaultQuery={tariffWagonItemsQuery}
                                             hideFilters={true}
                                             defaultData={wagonItemsDefaultData}

@@ -21,13 +21,13 @@ export default function TrainSchedulesDetails({ params }) {
     const [refreshKey, setRefreshKey] = useState(0);
 
     const [trainSchedulesQuery, setTrainSchedulesQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: trainId ? { trainId: { operand1: trainId, operator: 'equals' } } : {},
         sort: { id: { operator: 'desc' } }
     });
 
     const [trainWagonsQuery, setTrainWagonsQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: { number: { operator: 'asc' } }
     });
@@ -56,7 +56,7 @@ export default function TrainSchedulesDetails({ params }) {
             if (!trainId) return;
             try {
                 const response = await seatTariffsResource.search({
-                    paging: { skip: 0, take: 1000 },
+                    paging: { skip: 0, take: 10000 },
                     filter: { trainId: { operand1: trainId, operator: 'equals' } },
                     sort: { id: { operator: 'desc' } }
                 });
@@ -76,13 +76,13 @@ export default function TrainSchedulesDetails({ params }) {
 
         if (id) {
             setTrainWagonsQuery({
-                paging: { skip: 0, take: 10 },
+                paging: { skip: 0, take: 100 },
                 filter: { trainScheduleId: { operand1: id, operator: 'equals' } },
                 sort: { number: { operator: 'asc' } }
             });
         } else {
             setTrainWagonsQuery({
-                paging: { skip: 0, take: 10 },
+                paging: { skip: 0, take: 100 },
                 filter: {},
                 sort: { number: { operator: 'asc' } }
             });
@@ -219,6 +219,7 @@ export default function TrainSchedulesDetails({ params }) {
                 resourceName="расписание поезда по дням"
                 resource={trainSchedulesResource}
                 resourceMode="create"
+                resourceData={{ trainId: trainId }}
                 onResourceSubmitted={() => {
                     setIsCreateOpen(false);
                     setTrainSchedulesQuery({ ...trainSchedulesQuery });

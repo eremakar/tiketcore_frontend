@@ -15,7 +15,7 @@ import SeatTariffItems from "@/app/(defaults)/tarifications/seatTariffItems/page
 
 export default function SeatTariffs() {
     const [query, setQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {
@@ -51,23 +51,23 @@ export default function SeatTariffs() {
     const [isTariffItemsDrawerOpen, setIsTariffItemsDrawerOpen] = useState(false);
     const [selectedTariffId, setSelectedTariffId] = useState(null);
     const [tariffItemsQuery, setTariffItemsQuery] = useState({
-        paging: { skip: 0, take: 100 },
+        paging: { skip: 0, take: 1000 },
         filter: {},
         sort: { id: { operator: 'desc' } }
     });
 
     useEffect(() => {
         const fetchData = async () => {
-            const trainsResponse = await trainsResource.search({ paging: { skip: 0, take: 1000 } });
+            const trainsResponse = await trainsResource.search({ paging: { skip: 0, take: 10000 } });
             setTrains(trainsResponse.result || []);
 
-            const baseFaresResponse = await baseFaresResource.search({ paging: { skip: 0, take: 1000 } });
+            const baseFaresResponse = await baseFaresResource.search({ paging: { skip: 0, take: 10000 } });
             setBaseFares(baseFaresResponse.result || []);
 
-            const trainCategoriesResponse = await trainCategoriesResource.search({ paging: { skip: 0, take: 1000 } });
+            const trainCategoriesResponse = await trainCategoriesResource.search({ paging: { skip: 0, take: 10000 } });
             setTrainCategories(trainCategoriesResponse.result || []);
 
-            const tariffsResponse = await tariffsResource.search({ paging: { skip: 0, take: 1000 } });
+            const tariffsResponse = await tariffsResource.search({ paging: { skip: 0, take: 10000 } });
             setTariffs(tariffsResponse.result || []);
         };
         fetchData();
@@ -77,7 +77,7 @@ export default function SeatTariffs() {
         const tariffId = wrappedRow.row.id;
         setSelectedTariffId(tariffId);
         setTariffItemsQuery({
-            paging: { skip: 0, take: 100 },
+            paging: { skip: 0, take: 1000 },
             filter: { seatTariffId: { operand1: tariffId, operator: 'equals' } },
             sort: { id: { operator: 'desc' } }
         });

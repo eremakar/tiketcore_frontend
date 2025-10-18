@@ -10,16 +10,23 @@ export default function TrainLookup({useResource, resource, name, label, options
             label={label}
             options={{
                 ...options,
+                details: {
+                    ...options?.details,
+                    size: '[95vw]'
+                },
                 table: {
                     ...options?.table,
                     columns: [
-                        { key: 'id', title: 'Ид', isSortable: true },
-                        { key: 'name', title: 'Name', isSortable: true },
-                        { key: 'type', title: 'Тип поезда, например Тальго', isSortable: true },
-                        { key: 'zoneType', title: 'Зональность: пригородный, общий и т.п.', isSortable: true },
-                        { key: 'from', title: 'From', isSortable: true, render: (value) => value?.name },
-                        { key: 'to', title: 'To', isSortable: true, render: (value) => value?.name },
-                        { key: 'route', title: 'Route', isSortable: true, render: (value) => value?.name }
+                        { key: 'id', title: 'Ид', isSortable: true, style: { width: '60px' } },
+                        { key: 'name', title: 'Название', isSortable: true },
+                        { key: 'type', title: 'Тип поезда', isSortable: true, render: (value) => value?.name },
+                        { key: 'zoneType', title: 'Зональность', isSortable: true, render: (value) => ({ 1: 'Пригородный', 2: 'Общий' }[value] || value) },
+                        { key: 'from', title: 'Откуда', isSortable: true, render: (value) => value?.name },
+                        { key: 'to', title: 'Куда', isSortable: true, render: (value) => value?.name },
+                        { key: 'route', title: 'Маршрут', isSortable: true, render: (value) => value?.name },
+                        { key: 'plan', title: 'План вагонов', isSortable: true, render: (value) => value?.name },
+                        { key: 'category', title: 'Категория', isSortable: true, render: (value) => value?.name },
+                        { key: 'periodicity', title: 'Периодичность', isSortable: true, render: (value) => value?.name }
                     ],
                     filters: [
                         {
@@ -27,19 +34,17 @@ export default function TrainLookup({useResource, resource, name, label, options
                             key: 'id'
                         },
                         {
-                            title: 'Name',
+                            title: 'Название',
                             key: 'name',
                             operator: 'like',
                         },
                         {
-                            title: 'Тип поезда, например Тальго',
+                            title: 'Тип поезда',
                             key: 'type',
-                            type: 'number',
                         },
                         {
-                            title: 'Зональность: пригородный, общий и т.п.',
+                            title: 'Зональность',
                             key: 'zoneType',
-                            type: 'number',
                         },
                         {
                             title: 'FromId',
@@ -52,6 +57,18 @@ export default function TrainLookup({useResource, resource, name, label, options
                         {
                             title: 'RouteId',
                             key: 'routeId'
+                        },
+                        {
+                            title: 'PlanId',
+                            key: 'planId'
+                        },
+                        {
+                            title: 'CategoryId',
+                            key: 'categoryId'
+                        },
+                        {
+                            title: 'PeriodicityId',
+                            key: 'periodicityId'
                         }
                     ],
                     actions: {}

@@ -39,7 +39,7 @@ const GenA = () => {
     const [query, setQuery] = useState({
         paging: {
           skip: 0,
-          take: 10
+          take: 100
         },
         filter: {
 

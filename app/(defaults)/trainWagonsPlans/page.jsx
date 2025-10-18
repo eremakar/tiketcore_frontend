@@ -14,7 +14,7 @@ export default function TrainWagonsPlans() {
     const [selectedPlan, setSelectedPlan] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0);
     const [trainWagonsPlanWagonsQuery, setTrainWagonsPlanWagonsQuery] = useState({
-        paging: { skip: 0, take: 100 },
+        paging: { skip: 0, take: 1000 },
         filter: {},
         sort: {
             number: { operator: 'asc' }
@@ -23,7 +23,7 @@ export default function TrainWagonsPlans() {
 
     // TrainWagonsPlans query
     const [query, setQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {
@@ -75,7 +75,7 @@ export default function TrainWagonsPlans() {
         // Update trainWagonsPlanWagonsQuery when plan is selected
         if (planId) {
             setTrainWagonsPlanWagonsQuery({
-                paging: { skip: 0, take: 100 },
+                paging: { skip: 0, take: 1000 },
                 filter: {
                     planId: {
                         operand1: planId,
@@ -88,7 +88,7 @@ export default function TrainWagonsPlans() {
             });
         } else {
             setTrainWagonsPlanWagonsQuery({
-                paging: { skip: 0, take: 100 },
+                paging: { skip: 0, take: 1000 },
                 filter: {},
                 sort: {
                     number: { operator: 'asc' }

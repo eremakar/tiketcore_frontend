@@ -12,7 +12,7 @@ import { dataTableEventTypeIds } from "@/components/genA/v2/dataTableEventTypeId
 
 export default function Seats({ defaultQuery = null, fullHeight = false, hideFilters = false, ...props }) {
     const [query, setQuery] = useState(defaultQuery || {
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {

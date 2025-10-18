@@ -9,7 +9,7 @@ import RoleLookup from "@/app/(defaults)/roles/lookup";
 
 export default function Users() {
     const [query, setQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {

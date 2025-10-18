@@ -4,6 +4,8 @@ import { usePathname } from 'next/navigation';
 import Link from 'next/link';
 import IconHome from '@/components/icon/icon-home';
 import IconArrowForward from '@/components/icon/icon-arrow-forward';
+import { useEffect, useState } from 'react';
+import useResource from '@/hooks/useResource';
 
 interface BreadcrumbItem {
     label: string;
@@ -12,8 +14,32 @@ interface BreadcrumbItem {
 
 const Breadcrumb = () => {
     const pathname = usePathname();
+    const [trainName, setTrainName] = useState<string | null>(null);
+    const trainsResource = useResource('trains');
 
-    const getBreadcrumbItems = (): BreadcrumbItem[] => {
+    // Загружаем имя поезда, если мы на странице расписания
+    useEffect(() => {
+        const match = pathname.match(/^\/trainSchedules\/(\d+)/);
+        if (match) {
+            const trainId = parseInt(match[1]);
+            const loadTrainName = async () => {
+                try {
+                    const train = await trainsResource.get(trainId);
+                    if (train) {
+                        setTrainName(train.name || `Поезд ${train.id}`);
+                    }
+                } catch (error) {
+                    console.error('Error loading train name:', error);
+                    setTrainName(null);
+                }
+            };
+            loadTrainName();
+        } else {
+            setTrainName(null);
+        }
+    }, [pathname]);
+
+    const breadcrumbItems = (() => {
         const pathSegments = pathname.split('/').filter(Boolean);
         const items: BreadcrumbItem[] = [
             { label: 'Главная', href: '/' }
@@ -59,7 +85,13 @@ const Breadcrumb = () => {
         for (let i = 0; i < pathSegments.length; i++) {
             currentPath += `/${pathSegments[i]}`;
             const segment = pathSegments[i];
-            const label = pathLabels[segment] || segment;
+            let label = pathLabels[segment] || segment;
+
+            // Специальная обработка для ID поезда в trainSchedules
+            if (i === 1 && pathSegments[0] === 'trainSchedules' && /^\d+$/.test(segment)) {
+                // Это ID поезда
+                label = trainName || segment;
+            }
 
             // Последний элемент не должен быть ссылкой
             const isLast = i === pathSegments.length - 1;
@@ -70,9 +102,7 @@ const Breadcrumb = () => {
         }
 
         return items;
-    };
-
-    const breadcrumbItems = getBreadcrumbItems();
+    })();
 
     return (
         <nav className="flex items-center space-x-1 text-sm text-gray-500 dark:text-gray-400 px-6 py-3 bg-gray-50 dark:bg-gray-800 border-b border-gray-200 dark:border-gray-700">

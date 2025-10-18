@@ -7,9 +7,9 @@ import WagonLookup from "@/app/(defaults)/wagons/lookup";
 import { viewTypeIds } from "@/components/genA/v2/viewTypeIds";
 import { dataTableEventTypeIds } from "@/components/genA/v2/dataTableEventTypeIds";
 
-export default function TrainWagonsPlanWagons({ defaultQuery, fullHeight, onDataChange, isFilter, isSort }) {
+export default function TrainWagonsPlanWagons({ defaultQuery, fullHeight, onDataChange, isFilter, isSort, hideActions = false }) {
     const [query, setQuery] = useState(defaultQuery || {
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {
@@ -72,7 +72,13 @@ export default function TrainWagonsPlanWagons({ defaultQuery, fullHeight, onData
                 setQuery={setQuery}
                 filterMode={isFilter === false ? "none" : "default"}
                 sortMode={isSort === false ? "none" : "default"}
-                leftActions={true}
+                leftActions={!hideActions}
+                isActionsRendered={!hideActions}
+                isDelete={!hideActions}
+                isPager={!hideActions}
+                isTopPanel={!hideActions}
+                isBottomPanel={false}
+                isFetch={!hideActions}
                 enableCellEditOnDoubleClick={false}
                 fullHeight={fullHeight}
                 onChange={async (e) => {

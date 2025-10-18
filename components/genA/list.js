@@ -17,7 +17,7 @@ const List = ({data, setData, query, setQuery, defaultQuery, onQuery, onMap, col
     columns = columns?.filter(_ => !_.hidden);
 
     const { paging, filter, sort } = query || {
-        paging: { skip: 0, take: 10, returnCount: false },
+        paging: { skip: 0, take: 100, returnCount: false },
         filter: {},
         sort: {}
     };
@@ -126,11 +126,11 @@ const List = ({data, setData, query, setQuery, defaultQuery, onQuery, onMap, col
                 <Pagination
                     count={total}
                     currentPage={Math.floor((paging?.skip || 0) / (paging?.take || 1)) + 1}
-                    rowsPerPage={paging?.take || 10}
+                    rowsPerPage={paging?.take || 100}
                     onPageChange={(page) => {
                         setQuery({
                             ...query,
-                            paging: { ...paging, skip: (page - 1) * (paging?.take || 10) }
+                            paging: { ...paging, skip: (page - 1) * (paging?.take || 100) }
                         });
                     }}
                     onRowsPerPageChange={(take) => {

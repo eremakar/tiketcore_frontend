@@ -14,7 +14,7 @@ export default function Routes() {
     const [selectedRoute, setSelectedRoute] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0);
     const [routeStationsQuery, setRouteStationsQuery] = useState({
-        paging: { skip: 0, take: 100 },
+        paging: { skip: 0, take: 1000 },
         filter: {},
         sort: {
             order: { operator: 'asc' }
@@ -23,7 +23,7 @@ export default function Routes() {
 
     // Routes query
     const [routesQuery, setRoutesQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {
@@ -75,7 +75,7 @@ export default function Routes() {
         // Update routeStationsQuery when route is selected
         if (routeId) {
             setRouteStationsQuery({
-                paging: { skip: 0, take: 100 },
+                paging: { skip: 0, take: 1000 },
                 filter: {
                     routeId: {
                         operand1: routeId,
@@ -88,7 +88,7 @@ export default function Routes() {
             });
         } else {
             setRouteStationsQuery({
-                paging: { skip: 0, take: 100 },
+                paging: { skip: 0, take: 1000 },
                 filter: {},
                 sort: {
                     order: { operator: 'asc' }

@@ -12,7 +12,7 @@ import Details2 from "@/components/genA/details2";
 import { ResourceSelect2 } from "@/components/genA/resourceSelect2";
 import { dataTableEventTypeIds } from "@/components/genA/v2/dataTableEventTypeIds";
 
-export default function RouteStations({ defaultQuery = null, fullHeight = false, onDataChange = null, hideFilters = false, ...props }) {
+export default function RouteStations({ defaultQuery = null, fullHeight = false, onDataChange = null, hideFilters = false, hideActions = false, ...props }) {
     const [query, setQuery] = useState(defaultQuery || {
         paging: { skip: 0, take: 100 },
         filter: {},
@@ -128,12 +128,18 @@ export default function RouteStations({ defaultQuery = null, fullHeight = false,
                 setQuery={setQuery}
                 filterMode={hideFilters ? "none" : "default"}
                 sortMode={hideFilters ? "none" : "default"}
-                leftActions={true}
+                leftActions={!hideActions}
+                isActionsRendered={!hideActions}
+                isDelete={!hideActions}
                 enableCellEditOnDoubleClick={false}
                 fullHeight={fullHeight}
-                renderAdvancedActions={() => isRouteFiltered ? (
+                isPager={!hideActions}
+                isTopPanel={!hideActions}
+                isBottomPanel={false}
+                isFetch={!hideActions}
+                renderAdvancedActions={hideActions ? null : (() => isRouteFiltered ? (
                     <button type="button" className="btn btn-neo" onClick={() => setAddStationsShow(true)}>Добавить станции</button>
-                ) : null}
+                ) : null)}
                 onChange={async (e) => {
                     const wrappedRow = e.target;
                     const r = wrappedRow?.row || {};
@@ -236,6 +242,16 @@ export default function RouteStations({ defaultQuery = null, fullHeight = false,
                         //render: (value) => formatDateOnlyTime(value)
                     },
                     {
+                        key: 'day',
+                        title: 'Сутки',
+                        isSortable: true,
+                        editable: true,
+                        type: viewTypeIds.int,
+                        options: {
+                            nullable: true,
+                        }
+                    },
+                    {
                         key: 'distance',
                         title: 'Расстояние',
                         isSortable: true,
@@ -271,6 +287,11 @@ export default function RouteStations({ defaultQuery = null, fullHeight = false,
                         title: 'Время отправления',
                         key: 'departure',
                         type: 'datetime',
+                    },
+                    {
+                        title: 'Сутки',
+                        key: 'day',
+                        type: 'number',
                     },
                     {
                         title: 'Расстояние',

@@ -8,7 +8,7 @@ import { viewTypeIds } from "@/components/genA/v2/viewTypeIds";
 
 export default function RailwayStations({ defaultQuery = null, fullHeight = false, hideFilters = false, onDataChange = null, ...props }) {
     const [query, setQuery] = useState(defaultQuery || {
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {

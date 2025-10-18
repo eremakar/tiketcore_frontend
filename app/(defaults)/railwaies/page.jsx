@@ -12,7 +12,7 @@ export default function Railwaies() {
     const [selectedRailway, setSelectedRailway] = useState(null);
     const [refreshKey, setRefreshKey] = useState(0);
     const [railwayStationsQuery, setRailwayStationsQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             name: { operator: 'asc' }
@@ -21,7 +21,7 @@ export default function Railwaies() {
 
     // Railwaies query
     const [railwaiesQuery, setRailwaiesQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {
@@ -72,7 +72,7 @@ export default function Railwaies() {
         // Update railwayStationsQuery when railway is selected
         if (railwayId) {
             setRailwayStationsQuery({
-                paging: { skip: 0, take: 10 },
+                paging: { skip: 0, take: 100 },
                 filter: {
                     railwayId: {
                         operand1: railwayId,
@@ -85,7 +85,7 @@ export default function Railwaies() {
             });
         } else {
             setRailwayStationsQuery({
-                paging: { skip: 0, take: 10 },
+                paging: { skip: 0, take: 100 },
                 filter: {},
                 sort: {
                     id: { operator: 'asc' }

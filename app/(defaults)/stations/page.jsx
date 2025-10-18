@@ -7,7 +7,7 @@ import { asJSONSafe } from "@/components/genA/functions/json";
 
 export default function Stations() {
     const [query, setQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {

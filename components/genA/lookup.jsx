@@ -64,8 +64,10 @@ export default function Lookup({options, fullWidth = true, placeholder, formatVa
                             <IconX className="h-5 w-5 text-white" />
                         </div>
                     </div>
-                    <Details2 show={detailsShow} setShow={setDetailsShow} {...options?.details} {...props}
-                        size="3xl"
+                    <Details2 show={detailsShow} setShow={setDetailsShow} 
+                        size={options?.details?.size || "3xl"}
+                        {...options?.details} 
+                        {...props}
                         //dialogClassName="modal-90w"
                         formatTitle={options?.details?.formatTitle || ((_) => `Выбор ${_ || ""}`)}
                     >

@@ -6,7 +6,7 @@ import { useState } from "react";
 
 export default function SeatTypes() {
     const [query, setQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {

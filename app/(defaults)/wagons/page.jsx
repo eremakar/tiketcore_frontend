@@ -15,7 +15,7 @@ import WagonDetails from "./details";
 
 export default function Wagons({ defaultQuery = null, fullHeight = false, onDataChange = null, hideFilters = false, ...props }) {
     const [query, setQuery] = useState(defaultQuery || {
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {

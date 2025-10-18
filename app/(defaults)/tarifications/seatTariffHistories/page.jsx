@@ -14,7 +14,7 @@ import ConnectionLookup from "@/app/(defaults)/connections/lookup";
 
 export default function SeatTariffHistories() {
     const [query, setQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {

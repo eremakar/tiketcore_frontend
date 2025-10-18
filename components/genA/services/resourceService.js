@@ -64,7 +64,7 @@ export function ResourceService(env, resourceUrl, microserviceUrl = '', version 
 
             return await response.json();
         },
-        search: async function (query = { paging: { skip: 0, take: 10 } }, anonymous = false) {
+        search: async function (query = { paging: { skip: 0, take: 100 } }, anonymous = false) {
             return await this.fetch('post', '/search', query, anonymous);
         },
         get: async function (id, anonymous = false) {

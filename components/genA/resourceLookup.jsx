@@ -7,7 +7,7 @@ export default function ResourceLookup({useResource, name, resourceName, options
     fullWidth = true, placeholder, getRow, value, lookupValue, onChange, onRowChange, anonymous, ...props}) {
     const [row, setRow] = useState(null);
     const [query, setQuery] = useState(options?.table?.query || {
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {

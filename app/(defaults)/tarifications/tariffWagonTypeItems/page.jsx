@@ -9,7 +9,7 @@ import { dataTableEventTypeIds } from "@/components/genA/v2/dataTableEventTypeId
 
 export default function TariffWagonTypeItems({ defaultQuery, hideFilters = false, defaultData }) {
     const [query, setQuery] = useState(defaultQuery || {
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {
@@ -37,8 +37,8 @@ export default function TariffWagonTypeItems({ defaultQuery, hideFilters = false
         }
         const fetchData = async () => {
             const [wagonTypesResponse, tariffsResponse] = await Promise.all([
-                wagonTypesResource.search({ paging: { skip: 0, take: 1000 } }),
-                tariffsResource.search({ paging: { skip: 0, take: 1000 } })
+                wagonTypesResource.search({ paging: { skip: 0, take: 10000 } }),
+                tariffsResource.search({ paging: { skip: 0, take: 10000 } })
             ]);
             setWagonTypes(wagonTypesResponse?.result || []);
             setTariffs(tariffsResponse?.result || []);

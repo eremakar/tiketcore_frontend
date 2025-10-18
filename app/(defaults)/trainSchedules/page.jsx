@@ -9,7 +9,7 @@ import IconCalendar from "@/components/icon/icon-calendar";
 
 export default function TrainSchedules() {
     const [trainsQuery, setTrainsQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {

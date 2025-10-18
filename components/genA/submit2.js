@@ -3,7 +3,7 @@ import { Fragment } from "react";
 import { Transition, Dialog, DialogPanel, TransitionChild } from '@headlessui/react';
 import IconX from '@/components/icon/icon-x';
 
-const Submit2 = ({show, setShow, title, data, submitDisabled, children, onSubmit, submitError, onMap, size = 'lg', dialogClassName="", closeTitle="Закрыть", submitTitle="Сохранить", closeButtonClass="btn btn-outline-danger", submitButtonClass="btn btn-outline-primary",  ...props}) => {
+const Submit2 = ({show, setShow, title, data, submitDisabled, children, onSubmit, submitError, onMap, size = 'lg', dialogClassName="", closeTitle="Закрыть", submitTitle="Сохранить", closeButtonClass="btn btn-outline-danger", submitButtonClass="btn btn-outline-primary", hideButtons = false,  ...props}) => {
     useEffect(() => {
         if (!show || !data)
             return;
@@ -46,14 +46,16 @@ const Submit2 = ({show, setShow, title, data, submitDisabled, children, onSubmit
                             <div className="p-5">
                                 {children}
                                 {submitError && <label style={{color: 'red'}}>{submitError}</label>}
-                                <div class="flex justify-end items-center mt-8">
-                                    <button type="button" className={closeButtonClass} onClick={close}>
-                                        {closeTitle}
-                                    </button>
-                                    <button type="button" className={`${submitButtonClass} ltr:ml-4 rtl:mr-4`} onClick={onSubmit} disabled={submitDisabled}>
-                                        {submitTitle}
-                                    </button>
-                                </div>
+                                {!hideButtons && (
+                                    <div class="flex justify-end items-center mt-8">
+                                        <button type="button" className={closeButtonClass} onClick={close}>
+                                            {closeTitle}
+                                        </button>
+                                        <button type="button" className={`${submitButtonClass} ltr:ml-4 rtl:mr-4`} onClick={onSubmit} disabled={submitDisabled}>
+                                            {submitTitle}
+                                        </button>
+                                    </div>
+                                )}
                             </div>
                         </DialogPanel>
                     </TransitionChild>

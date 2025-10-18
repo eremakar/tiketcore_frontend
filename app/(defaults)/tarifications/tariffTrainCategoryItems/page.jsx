@@ -10,7 +10,7 @@ import { dataTableEventTypeIds } from "@/components/genA/v2/dataTableEventTypeId
 
 export default function TariffTrainCategoryItems({ defaultQuery, hideFilters = false, defaultData }) {
     const [query, setQuery] = useState(defaultQuery || {
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {
@@ -46,10 +46,10 @@ export default function TariffTrainCategoryItems({ defaultQuery, hideFilters = f
             return;
         }
         const fetchData = async () => {
-            const trainCategoriesResponse = await trainCategoriesResource.search({ paging: { skip: 0, take: 1000 } });
+            const trainCategoriesResponse = await trainCategoriesResource.search({ paging: { skip: 0, take: 10000 } });
             setTrainCategories(trainCategoriesResponse.result || []);
 
-            const tariffsResponse = await tariffsResource.search({ paging: { skip: 0, take: 1000 } });
+            const tariffsResponse = await tariffsResource.search({ paging: { skip: 0, take: 10000 } });
             setTariffs(tariffsResponse.result || []);
         };
         fetchData();

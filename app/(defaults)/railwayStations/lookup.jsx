@@ -8,7 +8,7 @@ export default function RailwayStationLookup({useResource, resource, name, label
     const railwaiesResource = useResourceHook('railwaies');
 
     const [query, setQuery] = useState({
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {
@@ -29,7 +29,7 @@ export default function RailwayStationLookup({useResource, resource, name, label
                     filterMode: 'inline',
                     initialShowFilter: true,
                     // query: {
-                    //     paging: { skip: 0, take: 10 },
+                    //     paging: { skip: 0, take: 100 },
                     //     filter: {},
                     //     sort: {
                     //         id: {

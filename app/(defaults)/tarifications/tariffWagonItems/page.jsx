@@ -13,7 +13,7 @@ import TariffSeatTypeItems from "@/app/(defaults)/tarifications/tariffSeatTypeIt
 
 export default function TariffWagonItems({ defaultQuery, hideFilters = false, defaultData, onDataChange }) {
     const [query, setQuery] = useState(defaultQuery || {
-        paging: { skip: 0, take: 10 },
+        paging: { skip: 0, take: 100 },
         filter: {},
         sort: {
             id: {
@@ -77,8 +77,8 @@ export default function TariffWagonItems({ defaultQuery, hideFilters = false, de
         }
         const fetchData = async () => {
             const [wagonsResponse, tariffsResponse] = await Promise.all([
-                wagonsResource.search({ paging: { skip: 0, take: 1000 } }),
-                tariffsResource.search({ paging: { skip: 0, take: 1000 } })
+                wagonsResource.search({ paging: { skip: 0, take: 10000 } }),
+                tariffsResource.search({ paging: { skip: 0, take: 10000 } })
             ]);
             setWagons(wagonsResponse?.result || []);
             setTariffs(tariffsResponse?.result || []);
